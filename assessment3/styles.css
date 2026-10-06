@@ -1,0 +1,99 @@
+body {
+  font-family: monospace;
+}
+nav {
+  margin-top: 50px;
+  margin-left: 50px;
+  float: left; /*float on top of the image*/
+  width: 15%;
+  line-height: 20px; /*vertical space*/
+  position: fixed;
+}
+
+nav a {
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+  display: block; /*each link takes avaliable space one after another*/
+}
+nav a:hover {
+  color: darkgrey;
+}
+/*nav a:visited {
+  color: darkseagreen;
+}*/
+/*address ID with # */
+#wrapper {
+  margin-top: 50px;
+  float: right;
+  width: 60%; /*60% of the container*/
+  margin-right: 50px;
+}
+
+header img {
+  width: 100%; /*width of div id"wrapper"*/
+  height: 100%;
+}
+
+header h1 {
+  text-align: right;
+  font-size: 25px;
+  margin-bottom: 5px;
+}
+header h2 {
+  margin-top: 0px;
+  margin-bottom: 30px;
+  text-align: right;
+  font-size: 18px;
+  color: darkgrey;
+}
+header h3 {
+  margin-top: 0px;
+  margin-bottom: 10px;
+  text-align: left;
+  font-size: 18px;
+  color: darkgrey;
+}
+section {
+  margin-bottom: 30px;
+  text-align: justify;
+}
+article h3 {
+  margin-bottom: 10px;
+  color: darkgrey;
+}
+/* "." is for class in html
+flex box is for a line of things*/
+.books {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  /*cuz we have 3 elements*/
+  max-width: 100%;
+  height: auto;
+  gap: 16px;
+}
+.books img {
+  display: block;
+  width: 100%;
+  height: 450px;
+  object-fit: cover; /*means that an image or video will scale to completely fill its container while preserving its original aspect ratio (proportions)*/
+}
+.books figure {
+  margin: 0; /*remove the spacing between the elements*/
+}
+article figure figcaption {
+  margin-top: 5px;
+  font-size: 12px;
+}
+footer {
+  margin-top: 20px;
+  min-height: 30px;
+  font-size: 10px;
+  font-weight: lighter;
+  text-align: right;
+  font-style: italic;
+}
+/*header img {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}*/
