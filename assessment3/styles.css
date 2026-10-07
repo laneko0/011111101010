@@ -1,5 +1,7 @@
 body {
   font-family: monospace;
+  padding: 0;
+  margin: 0;
 }
 nav {
   margin-top: 50px;
@@ -25,9 +27,9 @@ nav a:hover {
 /*address ID with # */
 #wrapper {
   margin-top: 50px;
-  float: right;
   width: 60%; /*60% of the container*/
   margin-right: 50px;
+  margin-left: auto;
 }
 
 header img {
@@ -64,19 +66,32 @@ article h3 {
 }
 /* "." is for class in html
 flex box is for a line of things*/
-.books {
+/*.Version1
+books {
   display: grid;
   grid-template-columns: auto auto auto;
-  /*cuz we have 3 elements*/
+  
   max-width: 100%;
   height: auto;
   gap: 16px;
+}*/ /*cuz we have 3 elements*/
+/*Version2
+.books {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  max: width 100px;
+  gap: 16px;
+}*/
+.books {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
 }
 .books img {
   display: block;
   width: 100%;
-  height: 450px;
-  object-fit: cover; /*means that an image or video will scale to completely fill its container while preserving its original aspect ratio (proportions)*/
+  height: auto;
+  /*object-fit: cover; means that an image or video will scale to completely fill its container while preserving its original aspect ratio (proportions)*/
 }
 .books figure {
   margin: 0; /*remove the spacing between the elements*/
@@ -93,7 +108,127 @@ footer {
   text-align: right;
   font-style: italic;
 }
+
+footer a {
+  text-decoration: none;
+  color: black;
+}
 /*header img {
   image-rendering: pixelated;
   image-rendering: crisp-edges;
 }*/
+
+/* TABLET
+Up to 900px */
+
+@media (max-width: 900px) {
+  #wrapper {
+    width: 70%;
+    margin-right: 30px;
+  }
+
+  nav {
+    margin-left: 30px;
+    width: 20%;
+  }
+  .books {
+    grid-template-columns: repeat(2, 1 fr);
+  }
+}
+
+/*MOBILE Up to 600px*/
+@media (max-width: 600px) {
+  /*Navigation becomes a normal horizontal mobile bar*/
+  nav {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0 0 40px 0;
+    padding: 10px 5px;
+    /*padding is space inside nav*/
+    position: relative;
+    float: none;
+
+    display: flex;
+    justify-content: space-around;
+    /*distribute things easily*/
+    align-items: center;
+    flex-wrap: wrap;
+    /*if there's enough room spread it horisontally*/
+    line-height: 30px;
+    background: black;
+    border-bottom: 4px solid black;
+
+    z-index: 1000;
+  }
+  nav a {
+    color: white;
+  }
+  nav a:hover {
+    color: darkgrey;
+  }
+  /*devices that actually support hover*/
+  @media (hover: hover) {
+    nav a:hover {
+      color: darkgrey;
+    }
+  }
+  /*Touch Interaction*/
+  nav a:active {
+    background: darkgray;
+  }
+
+  /* Main Content */
+  #wrapper {
+    width: 92%;
+    margin: 0 auto;
+    float: none;
+    /*cancle the float to left*/
+  }
+
+  /* Headings */
+
+  header h1 {
+    text-align: right;
+    font-size: 23px;
+    margin-top: 40px;
+  }
+  header h2 {
+    text-align: right;
+    font: size 18px;
+  }
+  header h3 {
+    font-size: 18px;
+  }
+  /*books*/
+
+  .books {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  /* Footer */
+
+  footer {
+    margin-top: 40px;
+    font: size 12px;
+  }
+}
+
+/*Very Small Phones - Up tp 400px */
+
+@media (max-width: 400px) {
+  nav {
+    padding: 8px 0;
+    /*8px top & bottom
+      0 left & right*/
+  }
+  #wrapper {
+    width: 94%;
+  }
+  .book {
+    gap: 12px;
+  }
+
+  article figure figcaption {
+    font-size: 11px;
+  }
+}
