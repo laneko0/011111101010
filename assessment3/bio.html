@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -31,7 +31,6 @@
       rel="stylesheet"
     />
 
-    <!-- Styles: the shared file first, then the rules that belong to this page only -->
     <link rel="stylesheet" href="styles.css" />
     <style>
       body {
@@ -41,9 +40,6 @@
         color: #111;
       }
 
-      /* ---------- Two newspaper pages side by side ---------- */
-      /* The black background shows through the 1px gaps: that is what draws the lines
-         between the boxes. */
       .paper {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -58,12 +54,12 @@
         flex-direction: column;
         gap: 1px; /* the weight of the line */
       }
-      /* Swap the pages: the second column (with the menu) is shown first, on the left */
+      /* Swap the column*/
       .paper > .col:last-child {
         order: -1;
       }
 
-      /* ---------- Boxes: every block of the newspaper ---------- */
+      /* ---------- Boxes---------- */
       .box {
         position: relative;
         overflow: hidden;
@@ -88,7 +84,7 @@
         font-weight: 400;
       }
 
-      /* ---------- Red rectangles that overprint the text ---------- */
+      /* ---------- Red rectangles---------- */
       .bar {
         position: absolute;
         background: var(--red);
@@ -96,17 +92,17 @@
         pointer-events: none;
       }
 
-      /* ---------- Left page: Early Writing Years, then the repeated title ---------- */
+      /* ---------- Early Writing Years ---------- */
       .title {
-        flex: 1; /* stretches, so both pages end at the bottom of the window */
+        flex: 1;
         padding: 0;
-        display: flex; /* the four lines are centred up and down in the box... */
+        display: flex;
         flex-direction: column;
         justify-content: center;
       }
       .title .word {
         margin: 0;
-        padding-left: 0.75vw; /* same as the letter-spacing: keeps the line truly centred */
+        padding-left: 0.75vw; /*keeps the line truly centred */
         font-size: min(9.2vw, 15vh);
         font-weight: 300;
         line-height: 0.9;
@@ -119,7 +115,7 @@
       .title .word:first-child {
         margin-top: -0.7vw;
       }
-      /* the yellow square holding the second heading */
+      /* the yellow square*/
       .label {
         position: absolute;
         top: 1vw;
@@ -141,9 +137,9 @@
         color: #111;
       }
 
-      /* ---------- Right page: menu bar, photo, Childhood, footnote ---------- */
+      /* ----------  menu bar, photo, Childhood, footnote ---------- */
       .head {
-        min-height: 6vh; /* room for the menu, which sits at the top left */
+        min-height: 6vh;
         display: flex;
         flex-direction: row-reverse; /* menu on the left edge, name on the right */
         justify-content: space-between;
@@ -160,13 +156,13 @@
         text-align: left;
         color: #111;
       }
-      /* menu colour on hover (the menu itself is in styles.css) */
+      /* menu colour on hover */
       nav a:hover {
         color: var(--red);
       }
 
       .photo {
-        flex: 0 1 auto; /* the photo keeps its own shape */
+        flex: 0 1 auto; /*photo keeps its own shape */
         min-height: 0;
         display: flex;
         padding: min(1.2vw, 2vh);
@@ -177,21 +173,21 @@
         min-height: 0;
         width: 100%;
         height: auto;
-        aspect-ratio: 900 / 651; /* the real shape of Bio.jpg: the whole picture, never cropped */
-        max-height: 100%; /* on a short window it shrinks whole... */
+        aspect-ratio: 900 / 651;
+        max-height: 100%;
         object-fit: contain;
-        background: #1f3fb8; /* ...and the frame colour fills any gap, never white */
+        background: #1f3fb8;
         border: 0.5vw solid #1f3fb8;
         box-sizing: border-box;
       }
 
       .childhood {
-        flex: 1 0 auto; /* takes the leftover height, but is never squeezed */
+        flex: 1 0 auto;
         padding-block: min(1.2vw, 2vh);
       }
       .note {
         display: flex;
-        align-items: flex-end; /* the footnote sits at the bottom of its box */
+        align-items: flex-end;
         padding-block: min(1vw, 1.5vh);
       }
       .note p {
@@ -199,10 +195,7 @@
         font-size: inherit; /* the footer size comes from styles.css */
       }
 
-      /* ---------- Small, narrow, portrait or very short windows (always last) ----------
-         Two pages side by side need room. Here the page becomes one column that scrolls.
-         display: contents makes the two columns disappear, so every box can be put in
-         reading order with order. */
+      /* ---------- Small ----------*/
       @media (max-width: 700px), (max-aspect-ratio: 1/1), (max-height: 520px) {
         .paper {
           display: flex;
@@ -273,7 +266,7 @@
   </head>
   <body>
     <main class="paper" id="wrapper">
-      <!-- ================= EARLY WRITING Years Page ================= -->
+      <!-- ================= EARLY WRITING Years ================= -->
       <div class="col">
         <section class="box">
           <h3>Early Writing Years</h3>

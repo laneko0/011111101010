@@ -44,8 +44,6 @@
         grid-template-columns: repeat(48, 1fr);
         grid-template-rows: repeat(30, 1fr);
         background-color: var(--paper);
-        /* Graph paper: thin lines on every cell, darker lines every 4th cell. The background
-           tiles are the same size as the grid cells, so they line up. */
         background-image: linear-gradient(
             rgba(0, 0, 0, 0.3) 1px,
             transparent 1px
@@ -224,17 +222,19 @@
           gap: 4vw;
           padding: 5vw;
           box-sizing: border-box;
-
-          background-size: 8.333vw 8.333vw, 8.333vw 8.333vw, 2.083vw 2.083vw,
-            2.083vw 2.083vw;
+          /* only the light grid on phones: square cells */
+          background-image: linear-gradient(
+              rgba(0, 0, 0, 0.12) 1px,
+              transparent 1px
+            ),
+            linear-gradient(90deg, rgba(0, 0, 0, 0.12) 1px, transparent 1px);
+          background-size: 2.083vw 2.083vw, 2.083vw 2.083vw;
         }
-        /* fix*/
+
         @supports (width: round(up, 1px, 1px)) {
           .poster {
-            --cell: round(2.083vw, 1px);
-            background-size: calc(var(--cell) * 4) calc(var(--cell) * 4),
-              calc(var(--cell) * 4) calc(var(--cell) * 4),
-              var(--cell) var(--cell), var(--cell) var(--cell);
+            background-size: round(2.083vw, 1px) round(2.083vw, 1px),
+              round(2.083vw, 1px) round(2.083vw, 1px);
           }
         }
         .poster > * {
@@ -251,7 +251,6 @@
           display: none;
         }
 
-        /* these run the full width of the page */
         .poster > nav,
         .label,
         .title,
