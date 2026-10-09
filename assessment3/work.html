@@ -228,6 +228,15 @@
           background-size: 8.333vw 8.333vw, 8.333vw 8.333vw, 2.083vw 2.083vw,
             2.083vw 2.083vw;
         }
+        /* fix*/
+        @supports (width: round(up, 1px, 1px)) {
+          .poster {
+            --cell: round(2.083vw, 1px);
+            background-size: calc(var(--cell) * 4) calc(var(--cell) * 4),
+              calc(var(--cell) * 4) calc(var(--cell) * 4),
+              var(--cell) var(--cell), var(--cell) var(--cell);
+          }
+        }
         .poster > * {
           grid-column: auto !important;
           grid-row: auto !important;

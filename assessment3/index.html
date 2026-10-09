@@ -196,6 +196,17 @@
           background-size: 8.333vw 8.333vw, 8.333vw 8.333vw, 2.083vw 2.083vw,
             2.083vw 2.083vw, 100% 100%;
         }
+        /* Problem fix>>>in whole pixels: one cell rounded to a whole pixel, and the
+           bold grid exactly 4 cells. With fractional sizes the two grids round differently on
+           a sharp phone screen and the bold line lands beside the fine one: a "doubled" line. */
+        @supports (width: round(up, 1px, 1px)) {
+          .poster {
+            --cell: round(2.083vw, 1px);
+            background-size: calc(var(--cell) * 4) calc(var(--cell) * 4),
+              calc(var(--cell) * 4) calc(var(--cell) * 4),
+              var(--cell) var(--cell), var(--cell) var(--cell), 100% 100%;
+          }
+        }
         .blue {
           z-index: -1;
         }
