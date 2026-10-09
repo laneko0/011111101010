@@ -3,160 +3,375 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ocean Vuong</title>
+    <title>Ocean Vuong | Work</title>
 
-    <!--Meta description for SEO-->
+    <!-- Search engines -->
     <meta
       name="description"
-      content="Explore the work of Ocean Vuong, award-winning poet and novelist, author of 'On Earth We're Briefly Geogeous' and 'Time Is a Mother'."
+      content="Explore the work of Ocean Vuong, award-winning poet and novelist, author of 'On Earth We're Briefly Gorgeous' and 'Time Is a Mother'."
     />
-    <!--Open Graph for Social Sharing-->
-    <!--Open Graph is an internet protocol that uses special metadata tags to control how a web page preview appears when shared on social media and messaging apps-->
+
+    <!-- Open Graph: how the page looks when it is shared on social media -->
     <meta property="og:title" content="Ocean Vuong" />
     <meta
-      property="og: description"
-      content="Ocean Vuong is an award winning
-    poet and novelist whose lyrical works, including 'On Earth We're Briefly
-    Geogeous' and 'Time Is a Mother', explore love, loss, and indentity with
-    profound beauty"
+      property="og:description"
+      content="Ocean Vuong is an award-winning poet and novelist whose lyrical works, including 'On Earth We're Briefly Gorgeous' and 'Time Is a Mother', explore love, loss, and identity with profound beauty"
+    />
+    <!-- <meta property="og:image" content="absolute URL" /> -->
+
+    <!-- Author and copyright -->
+    <meta name="author" content="Lan" />
+    <meta name="copyright" content="Copyright Lan, student project, 2026" />
+
+    <!-- Fonts: Barlow Condensed (Google Fonts) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600&display=swap"
+      rel="stylesheet"
     />
 
-    <!--meta property="og:image" content="Absolute URL"-->
-
-    <!--Author and Copyright-->
-    <meta
-      name="author"
-      content="your name"
-      <meta
-      name="copyright"
-      content="conpyright lan, student project, 2026"
-    />
     <link rel="stylesheet" href="styles.css" />
+    <style>
+      /* ---------- The poster: 48 columns x 30 rows over the whole window ---------- */
+      /* Every item is placed in the tag with grid-column: START / span WIDTH and
+         grid-row: START / span HEIGHT. Items later in the page are drawn on top. */
+      .poster {
+        position: relative;
+        height: 100vh;
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: repeat(48, 1fr);
+        grid-template-rows: repeat(30, 1fr);
+        background-color: var(--paper);
+        /* Graph paper: thin lines on every cell, darker lines every 4th cell. The background
+           tiles are the same size as the grid cells, so they line up. */
+        background-image: linear-gradient(
+            rgba(0, 0, 0, 0.3) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, rgba(0, 0, 0, 0.3) 1px, transparent 1px),
+          linear-gradient(rgba(0, 0, 0, 0.12) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 0, 0, 0.12) 1px, transparent 1px);
+        background-size: calc(100% / 12) calc(100% / 7.5),
+          calc(100% / 12) calc(100% / 7.5), calc(100% / 48) calc(100% / 30),
+          calc(100% / 48) calc(100% / 30);
+        font-family: var(--font);
+        font-weight: 500;
+        color: var(--black);
+      }
+
+      /* ---------- Shapes ---------- */
+      .black {
+        background: var(--black);
+      }
+      .white {
+        background: #fbfbfa;
+        box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+      }
+      .outline {
+        border: 4px solid var(--blue);
+      }
+      .bar {
+        align-self: center;
+        height: 10px;
+        background: var(--black);
+      }
+      .dot {
+        align-self: center;
+        justify-self: center;
+        width: 0.5vw;
+        height: 0.5vw;
+        border-radius: 50%;
+        background: #e8222a;
+      }
+
+      /* ---------- Text ---------- */
+      .poster h1,
+      .poster h2,
+      .poster p {
+        margin: 0;
+        text-align: left;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        color: var(--black);
+      }
+      .label {
+        align-self: center;
+        display: flex;
+        align-items: center;
+        gap: 0.5vw;
+        font-size: max(0.9rem, 1.5vw);
+      }
+      .label::before {
+        /* the curly brace on the left */
+        content: "{";
+        font-size: 3.4vw;
+        font-weight: 400;
+        line-height: 1;
+      }
+      .label.right {
+        justify-content: space-between;
+      }
+      .label.right::before {
+        content: none;
+      }
+      .label.right h2 {
+        font-size: min(6vh, 6vw);
+        line-height: 0.9;
+      }
+      .label.right::after {
+        /* the curly brace on the right */
+        content: "}";
+        font-size: min(8vh, 7vw);
+        font-weight: 400;
+        line-height: 1;
+        transform: translate(-20vw, 0);
+      }
+      .label .blue {
+        color: var(--blue);
+      }
+      /* white text centred in a black block */
+      .block-text {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 3.8vw;
+      }
+      .title {
+        align-self: center;
+        font-size: 6.6vw;
+        font-weight: 500;
+        line-height: 0.95;
+      }
+      /* the blue line through "Vuong" */
+      .title span {
+        text-decoration: line-through;
+        text-decoration-color: var(--blue);
+        text-decoration-thickness: 0.35vw;
+      }
+      .year {
+        align-self: center;
+        font-size: 5vw;
+        line-height: 1;
+      }
+      footer {
+        align-self: center;
+        text-transform: uppercase;
+        line-height: 1.2;
+      }
+      /* menu colour on hover*/
+      nav a:hover {
+        color: var(--blue);
+      }
+
+      /* ---------- Books ---------- */
+      /* A book is the cover with its caption under it. Its height is its content, so the
+         blue frame on hover holds both. */
+      .book {
+        position: relative;
+        margin: 0 2px; /* a little air between neighbouring books */
+        align-self: start;
+      }
+      .book img {
+        display: block;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 2 / 3;
+      }
+      .book figcaption {
+        position: relative;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 2px 4px;
+        background: rgba(251, 251, 250, 0.92);
+        font-size: max(0.65rem, 0.85vw);
+        line-height: 1.05;
+        text-transform: uppercase;
+      }
+      .book:focus-within {
+        outline: 2px solid var(--blue);
+        outline-offset: 3px;
+      }
+      .book:hover {
+        z-index: 5;
+        outline: 3px solid var(--blue);
+      }
+
+      /* ---------- The portrait in blue and black ---------- */
+      .head {
+        position: relative;
+        isolation: isolate;
+        background: var(--blue);
+      }
+      .head img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 48% 30%;
+        mix-blend-mode: multiply; /* light parts turn blue, dark parts stay black */
+        filter: grayscale(1) contrast(1.3) brightness(1.15);
+      }
+
+      @media (max-width: 700px), (max-aspect-ratio: 1/1), (max-height: 520px) {
+        .poster {
+          height: auto;
+          grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+          grid-template-rows: none;
+          gap: 4vw;
+          padding: 5vw;
+          box-sizing: border-box;
+
+          background-size: 8.333vw 8.333vw, 8.333vw 8.333vw, 2.083vw 2.083vw,
+            2.083vw 2.083vw;
+        }
+        .poster > * {
+          grid-column: auto !important;
+          grid-row: auto !important;
+        }
+
+        .outline,
+        .black,
+        .white,
+        .bar,
+        .dot,
+        .year {
+          display: none;
+        }
+
+        /* these run the full width of the page */
+        .poster > nav,
+        .label,
+        .title,
+        .head,
+        .poster > footer {
+          grid-column: 1 / -1 !important;
+        }
+
+        /* reading order */
+        nav {
+          order: -6;
+        }
+        .label:not(.right) {
+          order: -5;
+          font-size: 1.4rem;
+        }
+        .label::before {
+          font-size: 2.4rem;
+        }
+        .head {
+          order: -2;
+          aspect-ratio: 3 / 2;
+        }
+        .label.right {
+          order: -1; /* after the portrait, before the books */
+        }
+        .label.right h2 {
+          font-size: clamp(2.4rem, 13vw, 4rem);
+        }
+        .label.right::after {
+          font-size: clamp(3rem, 18vw, 5.5rem);
+        }
+        .title {
+          order: 1; /* after the books, right on top of the footer */
+          font-size: 20vw;
+        }
+        .title br {
+          display: none;
+        }
+        .title span {
+          text-decoration-thickness: 1vw;
+        }
+        footer {
+          order: 2;
+          align-self: start;
+        }
+
+        .book figcaption {
+          font-size: 0.7rem;
+        }
+      }
+    </style>
   </head>
   <body>
-    <nav>
-      <a href="index.html">Home</a><br />
-      <a href="bio.html">Bio</a><br />
-      <a href="work.html">Work</a><br />
-    </nav>
-
-    <!--Main Wrapper-->
-    <!--individule id used to connect with css file-->
-    <div id="wrapper">
-      <header>
-        <img src="assets/work.jpg" alt="Ocean Vuong" loading="lazy" />
-        <!--eager will make all images loaded at once, lazy will allow images loaded when you scroll close to it-->
+    <main class="poster" id="wrapper">
+      <!--Menu and top line-->
+      <nav>
+        <a href="index.html">Home</a><br />
+        <a href="bio.html">Bio</a><br />
+        <a href="work.html" aria-current="page">Work</a><br />
+      </nav>
+      <div
+        class="bar"
+        style="grid-column: 24 / span 6; grid-row: 1 / span 1"
+      ></div>
+      <div class="label" style="grid-column: 4 / span 12; grid-row: 3 / span 2">
         <h1>Ocean Vuong</h1>
-        <h2>Literary Success</h2>
-      </header>
-      <!--Main Content-->
-      <section>
-        <article>
-          <div class="books">
-            <figure>
-              <!--containing the images-->
-              <img
-                src="assets/Emperor.jpg"
-                alt="The emperor of Gladness"
-                loading="lazy"
-              />
-              <figcaption>The emperor of Gladness</figcaption>
-            </figure>
-            <figure>
-              <img
-                src="assets/Earth.jpg"
-                alt="On Earth We're Briefly Gorgeous: A Novel"
-                loading="lazy"
-              />
-              <figcaption>On Earth We're Briefly Gorgeous: A Novel</figcaption>
-            </figure>
-            <figure>
-              <img
-                src="assets/Mother.jpg"
-                alt="Time Is a Mother"
-                loading="lazy"
-              />
-              <figcaption>Time Is a Mother</figcaption>
-            </figure>
-            <figure>
-              <img
-                src="assets/Wounds.jpg"
-                alt="Night Sky with Exit Wounds"
-                loading="lazy"
-              />
-              <figcaption>Night Sky with Exit Wounds</figcaption>
-            </figure>
-            <figure>
-              <img
-                src="assets/Emperador.jpg"
-                alt="El emperador de Alegría"
-                loading="lazy"
-              />
-              <figcaption>El emperador de Alegría</figcaption>
-            </figure>
-            <figure>
-              <img
-                src="assets/splendeur.jpg"
-                alt="Un bref instant de splendeur"
-                loading="lazy"
-              />
-              <figcaption>Un bref instant de splendeur</figcaption>
-            </figure>
-            <figure>
-              <img
-                src="assets/Tierra.jpg"
-                alt="En la Tierra somos fugazmente grandiosos"
-                loading="lazy"
-              />
-              <figcaption>En la Tierra somos fugazmente grandiosos</figcaption>
-            </figure>
-            <figure>
-              <img
-                src="assets/mere.jpg"
-                alt="Le temps est une mère"
-                loading="lazy"
-              />
-              <figcaption>Le temps est une mère</figcaption>
-            </figure>
-            <figure>
-              <img
-                src="assets/Balas.jpg"
-                alt="Céu Noturno Crivado De Balas"
-                loading="lazy"
-              />
-              <figcaption>Céu Noturno Crivado De Balas</figcaption>
-            </figure>
-            <figure>
-              <img
-                src="assets/ChineseED.jpg"
-                alt="On Earth We're Briefly Gorgeous: A Novel"
-                loading="lazy"
-              />
-              <figcaption>此生，你我皆短暫燦爛</figcaption>
-            </figure>
-            <figure>
-              <img
-                src="assets/Heridas.jpg"
-                alt="Cielo nocturno con heridas de fuego"
-                loading="lazy"
-              />
-              <figcaption>Cielo nocturno con heridas de fuego</figcaption>
-            </figure>
-            <figure>
-              <img
-                src="assets/aquest.jpg"
-                alt="On Earth We're Briefly Gorgeous: A Novel(Catalan)"
-                loading="lazy"
-              />
-              <figcaption>
-                En aquest món, per un moment, som grandiosos
-              </figcaption>
-            </figure>
-          </div>
-        </article>
-      </section>
-      <!--Footer-->
-      <footer>
+      </div>
+
+      <!--Blocks-->
+      <div
+        class="outline"
+        style="grid-column: 40 / span 7; grid-row: 2 / span 7"
+      ></div>
+      <div
+        class="black"
+        style="grid-column: 11 / span 5; grid-row: 6 / span 5"
+      ></div>
+      <div
+        class="black"
+        style="grid-column: 3 / span 3; grid-row: 10 / span 2"
+      ></div>
+      <div
+        class="white"
+        style="grid-column: 39 / span 7; grid-row: 10 / span 5"
+      ></div>
+      <div
+        class="white"
+        style="grid-column: 3 / span 3; grid-row: 15 / span 3"
+      ></div>
+      <div
+        class="white"
+        style="grid-column: 11 / span 4; grid-row: 19 / span 3"
+      ></div>
+      <div
+        class="black block-text count"
+        style="grid-column: 17 / span 3; grid-row: 18 / span 4"
+      >
+        ↘
+      </div>
+      <div
+        class="black block-text work-label"
+        style="grid-column: 33 / span 13; grid-row: 15 / span 3"
+      >
+        Works
+      </div>
+      <div
+        class="black"
+        style="grid-column: 3 / span 13; grid-row: 28 / span 1"
+      ></div>
+
+      <!--Text-->
+      <div
+        class="label right"
+        style="grid-column: 23 / span 15; grid-row: 8 / span 3"
+      >
+        <h2><span class="blue">Literary</span><br />Success</h2>
+      </div>
+      <p
+        class="title"
+        aria-hidden="true"
+        style="grid-column: 3 / span 14; grid-row: 22 / span 6"
+      >
+        Ocean-<br /><span>Vuong</span>
+      </p>
+      <div class="dot" style="grid-column: 16; grid-row: 27"></div>
+
+      <div class="dot" style="grid-column: 46; grid-row: 19"></div>
+      <footer style="grid-column: 2 / span 11; grid-row: 29 / span 2">
         <small
           ><em
             >This website was created as part of a school project. All content
@@ -164,6 +379,168 @@
           ></small
         >
       </footer>
-    </div>
+
+      <!--The portrait-->
+      <div class="head" style="grid-column: 17 / span 9; grid-row: 22 / span 7">
+        <img src="assets/work.jpg" alt="Ocean Vuong" loading="lazy" />
+      </div>
+
+      <figure
+        class="book"
+        style="grid-column: 18 / span 4; grid-row: 2 / span 6"
+      >
+        <img
+          src="assets/Emperor.jpg"
+          alt="The emperor of Gladness"
+          width="300"
+          height="450"
+          loading="lazy"
+        />
+        <figcaption>The emperor of Gladness</figcaption>
+      </figure>
+      <figure
+        class="book"
+        style="grid-column: 31 / span 4; grid-row: 2 / span 6"
+      >
+        <img
+          src="assets/Earth.jpg"
+          alt="On Earth We're Briefly Gorgeous: A Novel"
+          width="300"
+          height="450"
+          loading="lazy"
+        />
+        <figcaption>On Earth We're Briefly Gorgeous: A Novel</figcaption>
+      </figure>
+      <figure
+        class="book"
+        style="grid-column: 36 / span 4; grid-row: 2 / span 6"
+      >
+        <img
+          src="assets/Mother.jpg"
+          alt="Time Is a Mother"
+          width="300"
+          height="450"
+          loading="lazy"
+        />
+        <figcaption>Time Is a Mother</figcaption>
+      </figure>
+      <figure
+        class="book"
+        style="grid-column: 7 / span 4; grid-row: 12 / span 6"
+      >
+        <img
+          src="assets/Wounds.jpg"
+          alt="Night Sky with Exit Wounds"
+          width="300"
+          height="450"
+          loading="lazy"
+        />
+        <figcaption>Night Sky with Exit Wounds</figcaption>
+      </figure>
+      <figure
+        class="book"
+        style="grid-column: 11 / span 4; grid-row: 12 / span 6"
+      >
+        <img
+          src="assets/Emperador.jpg"
+          alt="El emperador de Alegría"
+          width="300"
+          height="450"
+          loading="lazy"
+        />
+        <figcaption>El emperador de Alegría</figcaption>
+      </figure>
+      <figure
+        class="book"
+        style="grid-column: 24 / span 4; grid-row: 13 / span 6"
+      >
+        <img
+          src="assets/splendeur.jpg"
+          alt="Un bref instant de splendeur"
+          width="300"
+          height="450"
+          loading="lazy"
+        />
+        <figcaption>Un bref instant de splendeur</figcaption>
+      </figure>
+      <figure
+        class="book"
+        style="grid-column: 28 / span 4; grid-row: 13 / span 6"
+      >
+        <img
+          src="assets/Tierra.jpg"
+          alt="En la Tierra somos fugazmente grandiosos"
+          width="300"
+          height="450"
+          loading="lazy"
+        />
+        <figcaption>En la Tierra somos fugazmente grandiosos</figcaption>
+      </figure>
+      <figure
+        class="book"
+        style="grid-column: 28 / span 4; grid-row: 22 / span 6"
+      >
+        <img
+          src="assets/mere.jpg"
+          alt="Le temps est une mère"
+          width="300"
+          height="450"
+          loading="lazy"
+        />
+        <figcaption>Le temps est une mère</figcaption>
+      </figure>
+      <figure
+        class="book"
+        style="grid-column: 32 / span 4; grid-row: 21 / span 6"
+      >
+        <img
+          src="assets/Balas.jpg"
+          alt="Céu Noturno Crivado De Balas"
+          width="300"
+          height="450"
+          loading="lazy"
+        />
+        <figcaption>Céu Noturno Crivado De Balas</figcaption>
+      </figure>
+      <figure
+        class="book"
+        style="grid-column: 44 / span 4; grid-row: 21 / span 6"
+      >
+        <img
+          src="assets/ChineseED.jpg"
+          alt="On Earth We're Briefly Gorgeous: A Novel"
+          width="300"
+          height="450"
+          loading="lazy"
+        />
+        <figcaption>此生，你我皆短暫燦爛</figcaption>
+      </figure>
+      <figure
+        class="book"
+        style="grid-column: 40 / span 4; grid-row: 22 / span 6"
+      >
+        <img
+          src="assets/Heridas.jpg"
+          alt="Cielo nocturno con heridas de fuego"
+          width="300"
+          height="450"
+          loading="lazy"
+        />
+        <figcaption>Cielo nocturno con heridas de fuego</figcaption>
+      </figure>
+      <figure
+        class="book"
+        style="grid-column: 36 / span 4; grid-row: 19 / span 6"
+      >
+        <img
+          src="assets/aquest.jpg"
+          alt="On Earth We're Briefly Gorgeous: A Novel(Catalan)"
+          width="300"
+          height="450"
+          loading="lazy"
+        />
+        <figcaption>En aquest món, per un moment, som grandiosos</figcaption>
+      </figure>
+    </main>
   </body>
 </html>

@@ -1,74 +1,281 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ocean Vuong</title>
+    <title>Ocean Vuong | Biography</title>
 
-    <!--Meta description for SEO-->
+    <!-- Search engines -->
     <meta
       name="description"
-      content="Explore the work of Ocean Vuong, award-winning poet and novelist, author of 'On Earth We're Briefly Geogeous' and 'Time Is a Mother'."
+      content="Explore the work of Ocean Vuong, award-winning poet and novelist, author of 'On Earth We're Briefly Gorgeous' and 'Time Is a Mother'."
     />
-    <!--Open Graph for Social Sharing-->
-    <!--Open Graph is an internet protocol that uses special metadata tags to control how a web page preview appears when shared on social media and messaging apps-->
+
+    <!-- Open Graph: how the page looks when it is shared on social media -->
     <meta property="og:title" content="Ocean Vuong" />
     <meta
-      property="og: description"
-      content="Ocean Vuong is an award winning
-    poet and novelist whose lyrical works, including 'On Earth We're Briefly
-    Geogeous' and 'Time Is a Mother', explore love, loss, and indentity with
-    profound beauty"
+      property="og:description"
+      content="Ocean Vuong is an award-winning poet and novelist whose lyrical works, including 'On Earth We're Briefly Gorgeous' and 'Time Is a Mother', explore love, loss, and identity with profound beauty"
+    />
+    <!-- <meta property="og:image" content="absolute URL" /> -->
+
+    <!-- Author and copyright -->
+    <meta name="author" content="Lan" />
+    <meta name="copyright" content="Copyright Lan, student project, 2026" />
+
+    <!-- Fonts: Barlow Condensed (Google Fonts) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600&display=swap"
+      rel="stylesheet"
     />
 
-    <!--meta property="og:image" content="Absolute URL"-->
-
-    <!--Author and Copyright-->
-    <meta
-      name="author"
-      content="your name"
-      <meta
-      name="copyright"
-      content="conpyright lan, student project, 2026"
-    />
+    <!-- Styles: the shared file first, then the rules that belong to this page only -->
     <link rel="stylesheet" href="styles.css" />
+    <style>
+      body {
+        background: #fff;
+        font-family: var(--font);
+        font-weight: 300;
+        color: #111;
+      }
+
+      /* ---------- Two newspaper pages side by side ---------- */
+      /* The black background shows through the 1px gaps: that is what draws the lines
+         between the boxes. */
+      .paper {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1px;
+        background: var(--line);
+        height: 100vh; /* exactly one window tall: everything has to fit inside it */
+        overflow: hidden;
+      }
+      .col {
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 1px; /* the weight of the line */
+      }
+      /* Swap the pages: the second column (with the menu) is shown first, on the left */
+      .paper > .col:last-child {
+        order: -1;
+      }
+
+      /* ---------- Boxes: every block of the newspaper ---------- */
+      .box {
+        position: relative;
+        overflow: hidden;
+        padding: min(2vw, 3vh);
+        margin: 0;
+        background: #fff;
+        text-align: left;
+        font-style: normal;
+      }
+      .box h3 {
+        margin: 0 0 min(1.2vw, 1.8vh);
+        font-size: min(3.4vw, 6.5vh); /* also limited by the window height */
+        font-weight: 300;
+        line-height: 1.1;
+        text-transform: uppercase;
+        color: #111;
+      }
+      .box p {
+        margin: 0 0 0.9em;
+        font-size: clamp(0.7rem, min(0.95vw, 1.9vh), 0.95rem);
+        line-height: 1.45;
+        font-weight: 400;
+      }
+
+      /* ---------- Red rectangles that overprint the text ---------- */
+      .bar {
+        position: absolute;
+        background: var(--red);
+        mix-blend-mode: multiply;
+        pointer-events: none;
+      }
+
+      /* ---------- Left page: Early Writing Years, then the repeated title ---------- */
+      .title {
+        flex: 1; /* stretches, so both pages end at the bottom of the window */
+        padding: 0;
+        display: flex; /* the four lines are centred up and down in the box... */
+        flex-direction: column;
+        justify-content: center;
+      }
+      .title .word {
+        margin: 0;
+        padding-left: 0.75vw; /* same as the letter-spacing: keeps the line truly centred */
+        font-size: min(9.2vw, 15vh);
+        font-weight: 300;
+        line-height: 0.9;
+        white-space: nowrap;
+        letter-spacing: 0.75vw; /* spreads the letters so the line fills the box */
+        text-align: center; /* ...and left and right */
+        text-transform: uppercase;
+        color: #111;
+      }
+      .title .word:first-child {
+        margin-top: -0.7vw;
+      }
+      /* the yellow square holding the second heading */
+      .label {
+        position: absolute;
+        top: 1vw;
+        left: 1.5vw;
+        width: 12vw;
+        height: 12vw;
+        padding: 1vw;
+        box-sizing: border-box;
+        background: var(--yellow);
+        z-index: 2;
+      }
+      .label h2 {
+        margin: 0;
+        font-size: 2.5vw;
+        font-weight: 400;
+        line-height: 1.1;
+        text-align: left;
+        text-transform: uppercase;
+        color: #111;
+      }
+
+      /* ---------- Right page: menu bar, photo, Childhood, footnote ---------- */
+      .head {
+        min-height: 6vh; /* room for the menu, which sits at the top left */
+        display: flex;
+        flex-direction: row-reverse; /* menu on the left edge, name on the right */
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5vw 2vw;
+        font-size: clamp(0.75rem, 1.2vw, 1.1rem);
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+      .head h1 {
+        margin: 0;
+        font-size: inherit;
+        font-weight: 300;
+        text-align: left;
+        color: #111;
+      }
+      /* menu colour on hover (the menu itself is in styles.css) */
+      nav a:hover {
+        color: var(--red);
+      }
+
+      .photo {
+        flex: 0 1 auto; /* the photo keeps its own shape */
+        min-height: 0;
+        display: flex;
+        padding: min(1.2vw, 2vh);
+      }
+      .photo img {
+        display: block;
+        min-width: 0;
+        min-height: 0;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 900 / 651; /* the real shape of Bio.jpg: the whole picture, never cropped */
+        max-height: 100%; /* on a short window it shrinks whole... */
+        object-fit: contain;
+        background: #1f3fb8; /* ...and the frame colour fills any gap, never white */
+        border: 0.5vw solid #1f3fb8;
+        box-sizing: border-box;
+      }
+
+      .childhood {
+        flex: 1 0 auto; /* takes the leftover height, but is never squeezed */
+        padding-block: min(1.2vw, 2vh);
+      }
+      .note {
+        display: flex;
+        align-items: flex-end; /* the footnote sits at the bottom of its box */
+        padding-block: min(1vw, 1.5vh);
+      }
+      .note p {
+        margin: 0;
+        font-size: inherit; /* the footer size comes from styles.css */
+      }
+
+      /* ---------- Small, narrow, portrait or very short windows (always last) ----------
+         Two pages side by side need room. Here the page becomes one column that scrolls.
+         display: contents makes the two columns disappear, so every box can be put in
+         reading order with order. */
+      @media (max-width: 700px), (max-aspect-ratio: 1/1), (max-height: 520px) {
+        .paper {
+          display: flex;
+          flex-direction: column;
+          height: auto;
+          overflow: visible;
+        }
+        .col {
+          display: contents;
+        }
+        .box {
+          padding: 5vw;
+        }
+        .head {
+          order: 1;
+          min-height: 0;
+          font-size: 0.95rem;
+        }
+        .photo {
+          order: 2;
+          display: block;
+          flex: none;
+        }
+        .col:last-child > section {
+          order: 3; /* Childhood and Education */
+        }
+        .col:first-child > section {
+          order: 4; /* Early Writing Years */
+        }
+        .title {
+          order: 5;
+          flex: none;
+          padding: 3vw 0;
+        }
+        .note {
+          order: 6;
+        }
+
+        .photo img {
+          flex: none;
+          height: auto;
+          aspect-ratio: 900 / 651;
+          border-width: 2.4vw;
+        }
+        .title .word {
+          font-size: 16.5vw;
+        }
+        .label {
+          width: 28vw;
+          height: 26vw;
+          padding: 2vw;
+        }
+        .label h2 {
+          font-size: max(1rem, 4.6vw);
+        }
+        .box h3 {
+          font-size: clamp(1.5rem, 7vw, 2.4rem);
+          margin-bottom: 3vw;
+        }
+        .box p {
+          font-size: 1rem;
+        }
+        .note p {
+          font-size: inherit;
+        }
+      }
+    </style>
   </head>
   <body>
-    <nav>
-      <a href="index.html">Home</a><br />
-      <a href="bio.html">Bio</a><br />
-      <a href="work.html">Work</a><br />
-    </nav>
-
-    <!--Main Wrapper-->
-    <!--individule id used to connect with css file-->
-    <div id="wrapper">
-      <header>
-        <img
-          id="pixel-art-image"
-          src="assets/Bio.jpg"
-          alt="Portrait of Ocean Vuong"
-        />
-        <h1>Ocean Vuong</h1>
-        <h2>Biography</h2>
-      </header>
-      <!--Main Content-->
-      <main>
-        <article>
-          <h3>Childhood and Education</h3>
-          <p>
-            After leaving Vietnam at the age of two, he grew up in a
-            working-class family marked by the experiences of war and exile. His
-            mother, an illiterate seamstress, and his grandmother, a former rice
-            farmer, profoundly shaped his imagination and relationship with
-            language. Vuong was the first in his family to learn how to read and
-            write.
-          </p>
-          <p>
-            He studied initially at the University of Hartford, later earning a
-            B.A. in English from Brooklyn College, followed by an M.F.A. in
-            creative writing at New York University.
-          </p>
+    <main class="paper" id="wrapper">
+      <!-- ================= EARLY WRITING Years Page ================= -->
+      <div class="col">
+        <section class="box">
           <h3>Early Writing Years</h3>
           <p>
             His first poems appeared in small literary journals, but it was with
@@ -83,6 +290,17 @@
             illiterate mother, the book intertwines autobiography, family
             history, and reflections on sexuality, race, and inherited trauma.
           </p>
+          <div
+            class="bar"
+            style="
+              right: -10%;
+              top: 3%;
+              width: 46%;
+              height: 8%;
+              transform: rotate(-18deg);
+            "
+          ></div>
+
           <p>
             In 2022, he released Time Is a Mother, a poetry collection shaped by
             mourning his mother’s death and an even more intimate exploration of
@@ -92,17 +310,104 @@
             Ocean Vuong currently teaches literature and creative writing at the
             University of Massachusetts Amherst.
           </p>
-        </article>
-      </main>
-      <!--Footer-->
-      <footer>
-        <small
-          ><em
-            >This website was created as part of a school project. All content
-            and design are copy right Lan, student, 2026.</em
-          ></small
-        >
-      </footer>
-    </div>
+        </section>
+
+        <header class="box title">
+          <div class="label"><h2>Biography</h2></div>
+          <p class="word" aria-hidden="true">Ocean Vuong</p>
+          <p class="word" aria-hidden="true">Ocean Vuong</p>
+          <p class="word" aria-hidden="true">Ocean Vuong</p>
+          <p class="word">Ocean Vuong</p>
+          <div
+            class="bar"
+            style="
+              left: 22%;
+              top: 30%;
+              width: 55%;
+              height: 10%;
+              transform: rotate(-14deg);
+            "
+          ></div>
+          <div
+            class="bar"
+            style="
+              left: -6%;
+              top: 72%;
+              width: 48%;
+              height: 8%;
+              transform: rotate(52deg);
+            "
+          ></div>
+          <div
+            class="bar"
+            style="
+              left: 62%;
+              top: 52%;
+              width: 40%;
+              height: 9%;
+              transform: rotate(32deg);
+            "
+          ></div>
+        </header>
+      </div>
+
+      <!-- ================= Childhood ================= -->
+      <div class="col">
+        <header class="box head">
+          <h1>Ocean Vuong</h1>
+          <nav>
+            <a href="index.html">Home</a><br />
+            <a href="bio.html" aria-current="page">Bio</a><br />
+            <a href="work.html">Work</a><br />
+          </nav>
+        </header>
+
+        <div class="box photo">
+          <img
+            id="pixel-art-image"
+            src="assets/Bio.jpg"
+            alt="Portrait of Ocean Vuong"
+          />
+          <div
+            class="bar"
+            style="
+              left: 8%;
+              bottom: 10%;
+              width: 70%;
+              height: 9%;
+              transform: rotate(24deg);
+            "
+          ></div>
+        </div>
+
+        <section class="box childhood">
+          <h3>Childhood and Education</h3>
+          <p>
+            After leaving Vietnam at the age of two, he grew up in a
+            working-class family marked by the experiences of war and exile. His
+            mother, an illiterate seamstress, and his grandmother, a former rice
+            farmer, profoundly shaped his imagination and relationship with
+            language. Vuong was the first in his family to learn how to read and
+            write.
+          </p>
+          <p>
+            He studied initially at the University of Hartford, later earning a
+            B.A. in English from Brooklyn College, followed by an M.F.A. in
+            creative writing at New York University.
+          </p>
+        </section>
+
+        <footer class="box note">
+          <p>
+            <small
+              ><em
+                >This website was created as part of a school project. All
+                content and design are copy right Lan, student, 2026.</em
+              ></small
+            >
+          </p>
+        </footer>
+      </div>
+    </main>
   </body>
 </html>

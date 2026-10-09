@@ -3,76 +3,416 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ocean Vuong</title>
+    <title>Ocean Vuong | Home</title>
 
-    <!--Meta description for SEO-->
+    <!-- Search engines -->
     <meta
       name="description"
-      content="Explore the work of Ocean Vuong, award-winning poet and novelist, author of 'On Earth We're Briefly Geogeous' and 'Time Is a Mother'."
+      content="Explore the work of Ocean Vuong, award-winning poet and novelist, author of 'On Earth We're Briefly Gorgeous' and 'Time Is a Mother'."
     />
-    <!--Open Graph for Social Sharing-->
-    <!--Open Graph is an internet protocol that uses special metadata tags to control how a web page preview appears when shared on social media and messaging apps-->
+
+    <!-- Open Graph: how the page looks when it is shared on social media -->
     <meta property="og:title" content="Ocean Vuong" />
     <meta
-      property="og: description"
-      content="Ocean Vuong is an award winning
-    poet and novelist whose lyrical works, including 'On Earth We're Briefly
-    Geogeous' and 'Time Is a Mother', explore love, loss, and indentity with
-    profound beauty"
+      property="og:description"
+      content="Ocean Vuong is an award-winning poet and novelist whose lyrical works, including 'On Earth We're Briefly Gorgeous' and 'Time Is a Mother', explore love, loss, and identity with profound beauty"
+    />
+    <!-- <meta property="og:image" content="absolute URL" /> -->
+
+    <!-- Author and copyright -->
+    <meta name="author" content="Lan" />
+    <meta name="copyright" content="Copyright Lan, student project, 2026" />
+
+    <!-- Fonts: Barlow Condensed for the text, Pinyon Script for the swash O -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,500;0,600;1,400&family=Pinyon+Script&display=swap"
+      rel="stylesheet"
     />
 
-    <!--meta property="og:image" content="Absolute URL"-->
-
-    <!--Author and Copyright-->
-    <meta
-      name="author"
-      content="your name"
-      <meta
-      name="copyright"
-      content="conpyright lan, student project, 2026"
-    />
     <link rel="stylesheet" href="styles.css" />
+    <style>
+      header,
+      main,
+      article {
+        display: contents;
+      }
+
+      .poster {
+        position: relative;
+        height: 100vh;
+        overflow: hidden;
+        background-image: linear-gradient(
+            rgba(0, 0, 0, 0.11) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, rgba(0, 0, 0, 0.11) 1px, transparent 1px),
+          linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+          linear-gradient(120deg, #dcdcd9, #c8c8c5 45%, #e4e4e1);
+        background-size: calc(100% / 12) calc(100% / 7.5),
+          calc(100% / 12) calc(100% / 7.5), calc(100% / 48) calc(100% / 30),
+          calc(100% / 48) calc(100% / 30), 100% 100%;
+        font-family: var(--font);
+        font-weight: 500;
+        color: var(--ink);
+      }
+
+      /* ---------- Blue stair-step shapes ---------- */
+      /* clip-path cuts a rectangle down to a polygon. Each pair is [x% y%], so the
+         shape is a staircase. */
+      .blue {
+        position: absolute;
+        inset: 0;
+        background: var(--periwinkle);
+      }
+      .blue.top {
+        clip-path: polygon(
+          0 0,
+          68% 0,
+          68% 6%,
+          60% 6%,
+          60% 18%,
+          52% 18%,
+          52% 30%,
+          40% 30%,
+          40% 40%,
+          28% 40%,
+          28% 55%,
+          14% 55%,
+          14% 64%,
+          0 64%
+        );
+      }
+      .blue.bottom {
+        clip-path: polygon(0 70%, 24% 70%, 24% 78%, 36% 78%, 36% 100%, 0 100%);
+      }
+
+      /* ---------- Cropped pictures ---------- */
+      .pic {
+        position: absolute; /* left / top / width / height are set on each one in the tag */
+        overflow: hidden;
+      }
+      .pic img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* crop to the box */
+      }
+      .pic.tint {
+        background: #8b99ea;
+        isolation: isolate;
+      }
+      .pic.tint img {
+        mix-blend-mode: multiply;
+        filter: grayscale(1) contrast(1.05) brightness(1.3);
+      }
+      .pic.grey img {
+        filter: grayscale(1) contrast(1.1);
+      }
+
+      /* ---------- Text ---------- */
+      .big {
+        position: absolute;
+        margin: 0;
+        font-size: 12vw;
+        font-weight: 500;
+        line-height: 1;
+        letter-spacing: -0.02em;
+        text-transform: uppercase;
+        text-align: left;
+        white-space: nowrap;
+        color: var(--ink);
+        z-index: 3;
+      }
+      .swash {
+        font-family: var(--font-script);
+        font-size: 1.5em;
+        font-weight: 400;
+        line-height: 0;
+        text-transform: none;
+        color: #fff;
+        margin: 0 -0.05em;
+      }
+      .paren {
+        position: absolute;
+        margin: 0;
+        font-size: max(1.1rem, 2.6vw);
+        line-height: 1;
+        z-index: 3;
+        white-space: nowrap;
+      }
+      .italic {
+        position: absolute;
+        margin: 0;
+        font-style: italic;
+        font-weight: 400;
+        font-size: max(1rem, 1.5vw);
+        line-height: 1.3;
+        z-index: 3;
+      }
+      .small {
+        position: absolute;
+        margin: 0;
+        font-size: clamp(0.75rem, 0.85vw, 0.9rem);
+        line-height: 1.45;
+        font-weight: 400;
+        z-index: 3;
+      }
+      .names {
+        position: absolute;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        font-size: max(0.9rem, 1.2vw);
+        line-height: 1.5;
+        font-weight: 400;
+        text-align: right;
+        z-index: 3;
+      }
+
+      /* ---------- Menu colour on hover and footer ---------- */
+      nav a:hover {
+        color: #5b6fb8;
+      }
+      footer {
+        position: absolute;
+        right: 3vw;
+        bottom: 1.5vh;
+        z-index: 5;
+      }
+
+      @media (max-width: 700px), (max-aspect-ratio: 1/1), (max-height: 520px) {
+        .poster {
+          height: auto;
+          isolation: isolate; /* lets the blue shapes sit behind the text */
+          display: flex;
+          flex-wrap: wrap;
+          align-items: flex-start;
+          gap: 4vw;
+          padding: 5vw 5vw 8vw;
+          box-sizing: border-box;
+          background-size: 8.333vw 8.333vw, 8.333vw 8.333vw, 2.083vw 2.083vw,
+            2.083vw 2.083vw, 100% 100%;
+        }
+        .blue {
+          z-index: -1;
+        }
+        .line {
+          display: none;
+        }
+
+        .pic,
+        .big,
+        .paren,
+        .italic,
+        .small,
+        .names,
+        nav,
+        footer {
+          position: static;
+        }
+        nav {
+          order: 1;
+          flex-basis: 100%;
+        }
+        .big {
+          order: 2;
+          flex-basis: 100%;
+          margin: 0 !important;
+          font-size: 26vw;
+        }
+        .intro {
+          order: 3;
+          flex-basis: 100%;
+          font-size: 1.1rem;
+        }
+        .pic.full {
+          order: 4;
+          width: 100% !important;
+          height: auto !important;
+        }
+        .pic {
+          order: 5;
+          width: calc(50% - 2vw) !important;
+          height: 38vw !important;
+        }
+        .paren {
+          order: 6;
+          font-size: 1.4rem;
+        }
+        .about {
+          order: 7;
+          flex-basis: 100%;
+          width: auto !important;
+          font-size: 1rem;
+        }
+        .author {
+          order: 8;
+          flex-basis: 100%;
+          font-size: 1.1rem;
+        }
+        .names {
+          order: 9;
+          flex-basis: 100%;
+          width: auto !important;
+          text-align: left;
+          font-size: 1.1rem;
+        }
+        .prizes {
+          order: 10;
+          flex-basis: 100%;
+          width: auto !important;
+          text-align: left !important;
+          font-size: 1rem;
+        }
+        footer {
+          order: 11;
+          flex-basis: 100%;
+          text-align: left;
+        }
+      }
+    </style>
   </head>
   <body>
-    <nav>
-      <a href="index.html">Home</a><br />
-      <a href="bio.html">Bio</a><br />
-      <a href="work.html">Work</a><br />
-    </nav>
+    <div class="poster" id="wrapper">
+      <!--Background shapes and lines-->
+      <div class="blue top"></div>
+      <div class="blue bottom"></div>
+      <div class="line" style="left: 44%"></div>
+      <div class="line" style="left: 96%"></div>
 
-    <!--Main Wrapper-->
-    <!--individule id used to connect with css file-->
-    <div id="wrapper">
-      <header>
+      <!-- Cropped Pictures-->
+      <div
+        class="pic tint"
+        style="left: 34%; top: 0; width: 11vw; height: 20vh"
+      >
+        <!--Top image-->
         <img
-          id="pixel-art-image"
           src="assets/Home.jpg"
-          alt="Portrait of Ocean Vuong"
+          alt=""
+          style="
+            object-position: 50% 20%;
+            transform: scale(2.6);
+            transform-origin: 69% 38%;
+          "
         />
-        <h1>Ocean Vuong</h1>
+      </div>
+      <!--Right image-->
+      <div
+        class="pic tint"
+        style="left: 85%; top: 40%; width: 18vw; height: 25vh"
+      >
+        <img
+          src="assets/Home.jpg"
+          alt=""
+          style="
+            object-position: 5% 40%;
+            transform: scale(2);
+            transform-origin: 25% 40%;
+          "
+        />
+      </div>
+      <div
+        class="pic tint"
+        style="left: 23%; top: 58%; width: 10vw; height: 12vh"
+      >
+        <img
+          src="assets/Home.jpg"
+          alt=""
+          style="
+            object-position: 50% 35%;
+            transform: scale(10);
+            transform-origin: 52% 42%;
+          "
+        />
+      </div>
+      <div
+        class="pic grey"
+        style="left: 50%; top: 36%; width: 8vw; height: 17vh"
+      >
+        <img
+          src="assets/Home.jpg"
+          alt=""
+          style="
+            object-position: 92% 40%;
+            transform: scale(4);
+            transform-origin: 50% 60%;
+          "
+        />
+      </div>
+
+      <nav>
+        <a href="index.html" aria-current="page">Home</a><br />
+        <a href="bio.html">Bio</a><br />
+        <a href="work.html">Work</a><br />
+      </nav>
+
+      <header>
+        <div
+          class="pic grey full"
+          style="
+            left: 6%;
+            top: 74%;
+            width: min(17vw, 36vh);
+            aspect-ratio: 3 / 2;
+          "
+        >
+          <img
+            id="pixel-art-image"
+            src="assets/Home.jpg"
+            alt="Portrait of Ocean Vuong"
+          />
+        </div>
+
+        <h1 class="big" style="left: 1vw; top: 18vh" aria-label="Ocean Vuong">
+          Ocean
+        </h1>
+        <p class="big" style="left: 14vw; top: 37vh" aria-hidden="true">
+          VU<span class="swash">O</span>NG
+        </p>
       </header>
-      <!--Main Content-->
+
       <main>
         <article>
-          <p>
-            Ocean Vuong, born in 1988 in Ho Chi Minh City (Vietnam), is a
-            Vietnamese American poet, novelist, and professor. He emigrated to
-            the United States with his family in 1990 and grew up in
-            Connecticut.
+          <p class="italic intro" style="left: 46%; top: 2vh">
+            Ocean Vuong<br />Vietnamese American<br />poet, novelist,<br />and
+            professor
           </p>
-          <p>
-            Author of the critically acclaimed poetry collections
-            <em> Night Sky with Exit Wounds </em> and <em>Time Is a Mother</em>,
-            as well as the New York Times bestselling novel
-            <em>On Earth We’re Briefly Gorgeous</em>. A recipient of the
-            MacArthur Fellowship and the American Book Award, he once worked,
-            which inspired <em>The Emperor of Gladness</em>. Born in Saigon,
-            Vietnam, he currently splits his time between Northampton,
-            Massachusetts, and New York City.
+
+          <p class="paren" style="left: 2vw; top: 58vh">(1988)</p>
+          <p class="paren" style="left: 2vw; top: 66vh">(Ho Chi Minh City)</p>
+          <p class="paren" style="left: 24vw; top: 71vh">(Vietnam)</p>
+
+          <div class="small about" style="left: 24vw; top: 79vh; width: 30vw">
+            <p style="margin: 0 0 0.6em">
+              Ocean Vuong, born in 1988 in Ho Chi Minh City (Vietnam), is a
+              Vietnamese American poet, novelist, and professor. He emigrated to
+              the United States with his family in 1990 and grew up in
+              Connecticut.
+            </p>
+          </div>
+
+          <p class="italic author" style="left: 64%; top: 8vh">Author of:</p>
+          <ul class="names" style="left: 62%; width: 34%; top: 8vh">
+            <li>Night Sky with Exit Wounds</li>
+            <li>Time Is a Mother</li>
+            <li>On Earth We’re Briefly Gorgeous</li>
+            <li>The Emperor of Gladness</li>
+          </ul>
+          <p
+            class="small prizes"
+            style="left: 62%; width: 33%; top: 82vh; text-align: right"
+          >
+            A recipient of the MacArthur Fellowship and the American Book Award,
+            he once worked, which inspired <em>The Emperor of Gladness</em>.
+            Born in Saigon, Vietnam, he currently splits his time between
+            Northampton, Massachusetts, and New York City.
           </p>
         </article>
       </main>
-      <!--Footer-->
+
       <footer>
         <small
           ><em
