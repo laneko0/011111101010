@@ -1,0 +1,592 @@
+body {
+  font-family: "Roboto", "Inter", sans-serif;
+  font-weight: 900;
+  /* Use the default size as the reference size */
+  font-size: 1em;
+  /* Remove the inner spacing around the page */
+  padding: 0;
+  /* Remove the browser's default outer page margins */
+  margin: 0;
+}
+
+/* IMAGE HOVER EFFECTS */
+
+/* Position each figure so the text can appear over its image */
+.pict figure {
+  /* Create a position reference for child elements */
+  position: relative;
+  /* Allow figures to sit alongside each other */
+  display: inline-block;
+  /* Show a hand cursor when hovering over the figure */
+  cursor: pointer;
+}
+
+/* Make images fill available width */
+.pict img {
+  width: 100%;
+  /*Animate zoom and transparency changes over 0.3 seconds*/
+  transition: transform 0.3s ease;
+  opacity: 0.3s ease;
+}
+
+/* Hide the text until the image is hovered over */
+.hover-text {
+  /* Hide the text by default */
+  display: none;
+  /* Allows the text to sit on top of the image */
+  position: absolute;
+  bottom: 30px;
+  left: 10px;
+  /* Use a blackbkg of 70% opacity */
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 8px;
+  border-radius: 4px;
+  /* Keep the text on one line */
+  white-space: nowrap;
+}
+
+/* Reveal the text when the figure is hovered over */
+.pict figure:hover .hover-text {
+  /*change the text from hidden to visible*/
+  display: block;
+}
+/*Enlarge and slightly fade images on hover*/
+.pict figure:hover img {
+  /*Increase the image size by 5%*/
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+/*Apply a blur and zoom effect to images with class "im".*/
+.im:hover {
+  filter: blur(2px);
+  opacity: 0.9;
+  transform: scale(1.05);
+  transition: all 0.3s ease-in-out;
+}
+
+/*DESKTOP MENU*/
+.menu1 {
+  display: flex;
+  background: white;
+  justify-content: space-around;
+  align-items: center;
+}
+.menu1 a {
+  display: block;
+}
+/* hide the .hamburger-menu by default on desktop */
+.hamburger-menu {
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.hamburger-menu button {
+  background: none;
+  border: none;
+  font-size: 2em;
+  color: gray;
+}
+.hamburger-menu button .fa-bars {
+  cursor: pointer;
+}
+/*Hide the close button by default*/
+.close-menu {
+  display: none;
+}
+
+/*MAIN CONTENT AND HEADINGS*/
+
+#wrapper {
+  width: 90%;
+  /*center the container horizontally*/
+  margin: 0 auto;
+}
+h1 {
+  text-align: left;
+  font-size: 4em;
+  margin-bottom: 1em;
+}
+
+header h2 {
+  margin-top: 0px;
+  margin-bottom: 30px;
+  text-align: right;
+  font-size: 20px;
+  color: darkgrey;
+}
+.stories_title {
+  text-align: right;
+  font-size: 3em;
+}
+.intro {
+  font-size: 2em;
+  margin-bottom: 1em;
+  text-align: justify;
+}
+header h3 {
+  margin-top: 0px;
+  margin-bottom: 10px;
+  text-align: left;
+  font-size: 20px;
+  color: darkgrey;
+}
+/*NAVIGATIOIN BAR*/
+nav {
+  /* First colum:60% of the grid width. second column: the remaining available*/
+  display: grid;
+  grid-template-columns: 60% 1fr;
+  align-items: center;
+  font-size: 2em;
+  margin-top: 50px;
+}
+.logo {
+  text-align: left;
+}
+nav a {
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+}
+nav a:hover {
+  color: darkgrey;
+}
+.menuI {
+  text-align: right;
+}
+.menuI_active {
+  text-align: right;
+  color: gray;
+}
+/*SECTION AND ARTICLES*/
+
+section {
+  margin-bottom: 30px;
+  text-align: justify;
+}
+
+/*Select the last parahraph inside an article*/
+articlep: last-child {
+  /*Add extra space below the final paragraph*/
+  margin-bottom: 80px;
+}
+
+article h3 {
+  margin-bottom: 10px;
+  color: darkgrey;
+}
+/* FOOTER*/
+footer {
+  margin-top: 20px;
+  min-height: 30px;
+  font-size: 10px;
+  font-weight: lighter;
+  text-align: right;
+  font-style: italic;
+}
+
+footer a {
+  text-decoration: none;
+  color: black;
+}
+/*Story Page Layout*/
+/*Left column of the story page*/
+.left_stories {
+  grid-column: 1/6;
+  margin: 0;
+  padding: 0;
+}
+
+/*Right column containing the story text*/
+.stories {
+  grid-column: 7/13;
+  margin: 0;
+  padding: 0;
+  font-size: 1.2em;
+  line-height: 1.5em;
+}
+.stories p {
+  margin-top: 0;
+}
+/*DESKTOP IMAGE GRID*/
+.pict {
+  display: grid;
+  /* create a 12 equally sized colums */
+  grid-template-columns: repeat(12, 1fr);
+  gap: 0;
+  margin: 0;
+  padding: 0;
+}
+.im {
+  width: 100%;
+  height: auto;
+  /*Request a square image area*/
+  aspect-ratio: 1/1;
+  /* Fill the image area without stretching the image: The image may ne cropped to fit */
+  object-fit: cover;
+  /* include the padding and borders in the element dimensions */
+  box-sizing: boarder-box;
+  /* remove the extra baseline space between inline images */
+  display: block;
+}
+
+/*FIRST AND SECOND ROWS*/
+/*Image1: upper-left position*/
+.im1 {
+  /* span 3 columns */
+  grid-column: 1/4;
+  /* span 2 rows */
+  grid-row: 1/3;
+}
+/*Image2: beside image 1*/
+.im2 {
+  /* span the next 3 columns */
+  grid-column: 4/7;
+  /* span the same 2 rows */
+  grid-row: 1/3;
+}
+/*Image3: large rectangle on the right*/
+.im3 {
+  /* span the next 3 columns */
+  grid-column: 7/13;
+  /* span the same 2 rows */
+  grid-row: 1/5;
+}
+/*Image4: below image1*/
+.im4 {
+  /* use the same 3 columns as image 1 */
+  grid-column: 1/4;
+  /* span rows 3 and 4 */
+  grid-row: 3/5;
+}
+/*Image4: below image2*/
+.im5 {
+  /* use the same 3 columns as image 2 */
+  grid-column: 4/7;
+  /* span rows 3 and 4 */
+  grid-row: 3/5;
+}
+
+/*Third and forth rows*/
+/*Large rectangle on the left*/
+.im6 {
+  /* span 6 columns */
+  grid-column: 1/7;
+  /* span 4 rows */
+  grid-row: 5/9;
+}
+/*Image7:below image2*/
+.im7 {
+  /* span same 3 columns */
+  grid-column: 7/10;
+  /* span 2 rows */
+  grid-row: 5/7;
+}
+/*Image8:besides image7*/
+.im8 {
+  /* span same 3 columns  */
+  grid-column: 10/13;
+  /* span 2 rows */
+  grid-row: 5/7;
+}
+/*Image9:below image7*/
+.im9 {
+  /* span same 3 columns */
+  grid-column: 7/10;
+  /* span rows 7 and 8*/
+  grid-row: 7/9;
+}
+/*Image10:below image8*/
+.im10 {
+  grid-column: 10/13;
+  /* span 2 rows */
+  grid-row: 7/9;
+}
+
+/*Final row: images 11 to 14*/
+/*Apply shared positioining to images 11 and 13*/
+
+.im11,
+.im13 {
+  /*Initially assign the first 3 colums*/
+  grid-column: 1/4;
+  /*span the final rows*/
+  grid-row: 9/11;
+}
+
+/*Apply shared positioining to images 12 and 14*/
+.im12,
+.im14 {
+  /*Initially assign the colums 4 through 6*/
+  grid-column: 4/7;
+  /*span the final 2 rows*/
+  grid-row: 9/11;
+}
+.im13 {
+  /*place image13 in column 7 through 9*/
+  grid-column: 7/10;
+}
+.im14 {
+  /*place image13 in column 7 through 9*/
+  grid-column: 10/13;
+}
+/*END OF THE IMAGE GRID*/
+.social-icons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 100%;
+  width: 100%;
+}
+.social {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 15px;
+  text-decoration: none;
+  border-radius: 50%;
+
+  /* Add a smooth animation */
+  transition: 0.3s ease;
+  box-shadow: 0.3s ease;
+  /* transform animation movement */
+}
+/*INDIVIDUAL BRAND COLORS*/
+.facebook {
+  background: #1877f2;
+}
+.instagram {
+  /*sets the gradient direction to 45 degress*/
+  background: linear-gradient(
+    45deg,
+    #feda75,
+    #fa7e1e,
+    #d62976,
+    #962fbf,
+    #4f5bdf
+  );
+}
+.x {
+  background: black;
+}
+.tiktok {
+  background: #111111;
+}
+.youtube {
+  background: #ff0000;
+}
+.linkedin {
+  background: #0a66c2;
+}
+.github {
+  background: #24292f;
+}
+
+/*Hover effect*/
+.social:hover {
+  /* move icon upward by 6px and enlarges it by 6% */
+  transform: translate(-6px) scale(1.08);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+}
+
+/*Keyboard navigation, such as tab key*/
+.social:focus-visible {
+  online: 3px solid #38bdf8;
+  outline-offset: 5px;
+}
+
+/*Credits*/
+.credits {
+  margin-top: 10px;
+  font-size: 1em;
+  width: 100%;
+}
+
+/*Responsive design*/
+@media (max-width: 1024px) {
+  /* Show hamburger button on mobile/tablet */
+  .hamburger-menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Hamburger button styling */
+  .hamburger-menu button {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  /* Mobile navigation menu */
+  .menu1 {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  /* Show menu when JavaScript adds the class */
+  .menu1.menu-deployed {
+    display: flex;
+  }
+
+  /* Navigation links */
+  .menu1 a,
+  .menu1 a:hover {
+    text-decoration: none;
+    color: gray;
+    background-color: transparent;
+  }
+
+  .menu1 a {
+    padding: 20px;
+  }
+
+  /* Active navigation link */
+  .menuI_active {
+    color: #111111;
+  }
+
+  /* Close button */
+  .menu1 .close-menu {
+    display: none;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 2em;
+    color: gray;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  /* Display close button when menu is deployed */
+  .menu1.menu-deployed .close-menu {
+    display: block;
+  }
+
+  /* Navigation container */
+  nav {
+    margin: 0;
+    margin-bottom: 50px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 20px;
+    line-height: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    boader-bottom: 4px solid black;
+    background: black;
+    z-index: 1000;
+    color: white;
+  }
+  h1 {
+    margin-top: 50px;
+  }
+  nav a {
+    color: white;
+  }
+  /*mobile*/
+  #wrapper {
+    margin-top: 500px;
+    position: relative;
+    width: 90%;
+    margin: 0;
+    float: none;
+  }
+  footer {
+    margin-top: 40px;
+    font-size: 12px;
+  }
+
+  /*TWO COLUMN MOBILE IMAGE GRID*/
+
+  .pict {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    grid-auto-flow: row;
+    align-items: start;
+  }
+  /* Reset desktop pos and constrain each grid item. */
+  .pict figure,
+  .pict [class^="im"]{
+    grid-column: auto;
+    grid-row:auto;
+    width:100%;
+    min-width:0;
+    max-width:100%;
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+  }
+  /* Make images fit inside their columns*/
+  .picy img{
+    display: block;
+    width:100%;
+    max-width: 100%;
+    height:auto;
+
+    aspect-ratio: :1/1;
+    object-fit: cover;
+    box-sizing:border-box
+  }
+  .pict figure:hover img,
+  .pict .im:hover{
+    transform:none;
+  }
+
+  /*Keep hover text inside the image*/
+  .pict .hover-text{
+    max-width: calc(100%-20%);
+    box-sizing:border-box;
+    white-space:normal;
+  }
+
+  @media (max-width:600px){
+    .pict{
+      grid-template-columns: repeat(2,minmax(0,1fr));
+      gap:5px;
+    }
+  }
+  /*MOBILE STORY LAYOUT*/
+  .left_stories{
+    grid-column: 1/3;
+    margin: 0;
+    padding:0;
+  }
+
+  .stories{
+    grid-column: 1/3;
+    margin:0;
+    padding:0;
+    font-size:1.2em;
+    line-height:1.3em;
+  }
+
+  /*MOBILE BOOK GRID*/
+  .books{
+    grid-template-columns: auto auto;
+    gap:16px;
+  }
+}
