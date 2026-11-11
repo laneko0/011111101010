@@ -87,7 +87,7 @@
 
       #portal text {
         font-weight: 800;
-        font-size: 20vw;
+        font-size: var(--logo);
         transform-box: view-box;
         transform-origin: 50% 50%;
       }
@@ -97,10 +97,10 @@
         position: absolute;
         left: 0;
         right: 0;
-        top: calc(50% + 9vw);
+        top: calc(50% + var(--logo) * 0.45);
         margin: 0;
         text-align: center;
-        font-size: 4vw;
+        font-size: calc(var(--logo) * 0.2);
         font-weight: 400;
         color: #111;
         opacity: calc(1 - var(--p, 0) * 4);
@@ -111,7 +111,7 @@
           left: var(--logo-left, 10vw);
           right: auto;
           text-align: left;
-          font-size: 8vw;
+          font-size: calc(var(--logo) * 0.4);
         }
       }
 
@@ -119,6 +119,8 @@
       :root {
         --u: max(1vw, 0.7vh);
         --pad: calc(var(--u) * 4.6);
+        --logo: min(20vw, 36vh);
+        --side: calc(var(--pad) * 1.6);
       }
       .hud {
         font-size: max(11px, calc(var(--u) * 1.3));
@@ -275,7 +277,7 @@
       #wrapper {
         width: auto;
         box-sizing: border-box;
-        padding: 0 calc(var(--pad) * 1.6) calc(var(--pad) * 2.2);
+        padding: 0 var(--side) calc(var(--pad) * 2.2);
       }
 
       /* ===== FLY-THROUGH GALLERY ===== */
@@ -286,8 +288,7 @@
         position: sticky;
         top: 0;
         height: 100vh;
-        width: 100vw;
-        margin-left: calc(50% - 50vw);
+        margin: 0 calc(var(--side) * -1);
         overflow: hidden;
       }
       #fly figure {
@@ -428,16 +429,8 @@
         <svg aria-hidden="true">
           <mask id="hole">
             <rect width="100%" height="100%" fill="white" />
-            <text x="50%" y="50%" text-anchor="end" dominant-baseline="central">
-              HUM
-            </text>
-            <text
-              x="50%"
-              y="50%"
-              text-anchor="start"
-              dominant-baseline="central"
-            >
-              ANs
+            <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central">
+              HUMANs
             </text>
           </mask>
           <rect width="100%" height="100%" fill="white" mask="url(#hole)" />
@@ -698,25 +691,27 @@
       // SCROLL ZOOM ENTRY
       const portal = document.getElementById("portal");
       const sheet = portal.querySelector(".stage > svg");
-      const [left, right] = portal.querySelectorAll("text");
+      const logo = portal.querySelector("text");
 
-      let shift = 0;
-      function centre() {
-        const l = left.getBBox();
-        const r = right.getBBox();
-        shift = portal.clientWidth / 2 - (l.x + r.x + r.width) / 2;
-
+      let stemOffset = 0;
+      function measure() {
+        logo.style.transform = "none";
+        const fontSize = parseFloat(getComputedStyle(logo).fontSize);
         const ctx = document.createElement("canvas").getContext("2d");
-        ctx.font = `800 ${parseFloat(
-          getComputedStyle(left).fontSize
-        )}px Urbanist`;
-        const inkLeft =
-          l.x + shift - ctx.measureText("H").actualBoundingBoxLeft;
+        ctx.font = `800 ${fontSize}px Urbanist`;
+
+        const word = logo.getBBox();
+        const m = logo.getExtentOfChar(2);
+        const stemX = m.x + ctx.measureText("M").actualBoundingBoxRight - 0.085 * fontSize;
+        stemOffset = stemX - portal.clientWidth / 2;
+        maxScale = Math.max(40, portal.clientWidth / (0.15 * fontSize));
+
+        const inkLeft = word.x - ctx.measureText("H").actualBoundingBoxLeft;
         portal.style.setProperty("--logo-left", `${inkLeft}px`);
         update();
       }
 
-      const MAX_SCALE = 40;
+      let maxScale = 40;
       const FADE_START = 0.3;
       const FADE_TO = 0.6;
       const SHEET_GONE = 0.6;
@@ -729,12 +724,11 @@
           1
         );
 
-        const scale = 1 + p * p * (MAX_SCALE - 1);
+        const scale = 1 + p * p * (maxScale - 1);
 
-        const fontSize = parseFloat(getComputedStyle(left).fontSize);
-        const merge = fontSize * 0.075 * Math.min(p * 2.6, 1);
-        left.style.transform = `translate(${shift}px, 0) scale(${scale}) translate(${merge}px, 0)`;
-        right.style.transform = `translate(${shift}px, 0) scale(${scale}) translate(${-merge}px, 0)`;
+        const t = Math.min(Math.max((p - 0.2) / 0.4, 0), 1);
+        const pivot = stemOffset * t * t * (3 - 2 * t);
+        logo.style.transform = `translate(${pivot * (1 - scale)}px, 0) scale(${scale})`;
 
         const fade = Math.min(
           Math.max((p - FADE_START) / (SHEET_GONE - FADE_START), 0),
@@ -746,8 +740,8 @@
       }
 
       addEventListener("scroll", update, { passive: true });
-      addEventListener("resize", centre);
-      document.fonts.ready.then(centre);
+      addEventListener("resize", measure);
+      document.fonts.load("800 1em Urbanist").then(measure);
       update();
     </script>
     <script>
