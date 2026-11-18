@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Case Brief — Last Seen Online</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@400;700&family=Pixelify+Sans:wght@500;700&family=Share+Tech+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="silver.css" />
+    <style>
+      .at {
+        position: fixed;
+      }
+
+      /* ---------- backdrop ---------- */
+      .page {
+        position: fixed;
+        z-index: 1;
+        left: 1.6vw;
+        right: 1.6vw;
+        top: calc(clamp(26px, 1.9vw, 44px) + 1.2vw);
+        bottom: 1.6vw;
+        background: url(img/hologram2.png) 62% 50% / auto 118% no-repeat;
+        color: #111;
+        font-family: var(--pix);
+        text-transform: uppercase;
+      }
+      .page::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: repeating-linear-gradient(
+          0deg,
+          rgba(70, 80, 200, 0.22) 0 1px,
+          transparent 1px 4px
+        );
+        -webkit-mask: url(img/hologram2.png) 62% 50% / auto 118% no-repeat;
+        mask: url(img/hologram2.png) 62% 50% / auto 118% no-repeat;
+      }
+      .page > * {
+        position: absolute;
+        z-index: 1;
+      }
+      .page .cap {
+        left: 5%;
+        top: 8%;
+        font: 700 max(11px, calc(17 * var(--u))) / 1.2 var(--pix);
+        letter-spacing: 0.06em;
+      }
+      .page .small {
+        left: 12%;
+        font: max(8px, calc(10 * var(--u))) / 1.7 var(--pix);
+      }
+      .page .small.a {
+        bottom: 9%;
+      }
+      .page .small.b {
+        bottom: 6%;
+      }
+      .page .stats {
+        right: 6%;
+        top: 9%;
+        width: 21%;
+        font: max(11px, calc(13 * var(--u))) / 1.4 var(--mono);
+        text-transform: none;
+      }
+      .stat {
+        margin-bottom: 1.4em;
+      }
+      .stat::after {
+        content: "";
+        display: block;
+        clear: both;
+      }
+      .stat b {
+        float: left;
+        margin: -0.1em 0.2em 0 0;
+        font: 700 3.2em / 0.9 var(--pix);
+        color: #7f86e8;
+      }
+      .page .note {
+        width: 15%;
+        color: #555;
+        font: max(7px, calc(9 * var(--u))) / 1.7 var(--pix);
+      }
+      .page .note.a {
+        left: 43%;
+        top: 8%;
+      }
+      .page .note.b {
+        right: 6%;
+        top: 27%;
+        width: 21%;
+      }
+      .page .note.c {
+        left: 44%;
+        bottom: 7%;
+      }
+      .page .note.d {
+        right: 6%;
+        top: 4.5%;
+        width: auto;
+      }
+      .page .call {
+        right: 6%;
+        bottom: 6%;
+        font: 700 max(10px, calc(12 * var(--u))) var(--pix);
+      }
+
+      /* ---------- camera ---------- */
+      #cam {
+        left: calc(390 * var(--ux) - 350 * var(--u));
+        top: calc(540 * var(--uy) - 345 * var(--u));
+        width: calc(700 * var(--u));
+        height: calc(690 * var(--u));
+      }
+      .feed {
+        position: relative;
+        flex: 1;
+        overflow: hidden;
+        background: #000;
+        color: var(--hud);
+        font: max(8px, calc(10 * var(--u))) / 1.55 var(--mono);
+        letter-spacing: 0.06em;
+      }
+      .feed > * {
+        position: absolute;
+      }
+      .street {
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 50% 55%;
+        filter: saturate(0.85) contrast(1.08);
+        transform: scale(1.06)
+          translate(calc(var(--mx, 0) * -1.4%), calc(var(--my, 0) * -1.4%));
+        transition: transform 0.25s ease-out;
+      }
+      .grain {
+        inset: -40px;
+        mix-blend-mode: overlay;
+        opacity: 0.5;
+        animation: grain 0.5s steps(5) infinite;
+        background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence baseFrequency='.9' numOctaves='2'/><feColorMatrix type='saturate' values='0'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>");
+      }
+      @keyframes grain {
+        to {
+          transform: translate(24px, 18px);
+        }
+      }
+      .scan {
+        inset: 0;
+        background: repeating-linear-gradient(
+          transparent 0 2px,
+          rgba(0, 0, 0, 0.14) 2px 3px
+        );
+      }
+      .vig {
+        inset: 0;
+        background: radial-gradient(
+          ellipse at 50% 45%,
+          transparent 55%,
+          rgba(0, 0, 0, 0.55)
+        );
+      }
+      .frame {
+        inset: 3%;
+        border: 1px solid rgba(93, 255, 122, 0.55);
+        background: linear-gradient(rgba(93, 255, 122, 0.3) 0 0) 33.3% 0 / 1px
+            100% no-repeat,
+          linear-gradient(rgba(93, 255, 122, 0.3) 0 0) 66.6% 0 / 1px 100%
+            no-repeat,
+          linear-gradient(rgba(93, 255, 122, 0.3) 0 0) 0 38% / 100% 1px
+            no-repeat,
+          linear-gradient(rgba(93, 255, 122, 0.3) 0 0) 0 76% / 100% 1px
+            no-repeat;
+      }
+      .tl {
+        left: 5%;
+        top: 4.5%;
+      }
+      .tr {
+        right: 5%;
+        top: 4.5%;
+        text-align: right;
+      }
+      .br {
+        right: 5%;
+        bottom: 4.5%;
+        text-align: right;
+      }
+      .face {
+        --b: 2px;
+        --l: 28%;
+        left: 41%;
+        top: 34.3%;
+        width: 18%;
+        height: 16.5%;
+        background-repeat: no-repeat;
+        background-image: linear-gradient(var(--hud) 0 0),
+          linear-gradient(var(--hud) 0 0), linear-gradient(var(--hud) 0 0),
+          linear-gradient(var(--hud) 0 0), linear-gradient(var(--hud) 0 0),
+          linear-gradient(var(--hud) 0 0), linear-gradient(var(--hud) 0 0),
+          linear-gradient(var(--hud) 0 0);
+        background-position: left top, left top, right top, right top,
+          left bottom, left bottom, right bottom, right bottom;
+        background-size: var(--l) var(--b), var(--b) var(--l), var(--l) var(--b),
+          var(--b) var(--l), var(--l) var(--b), var(--b) var(--l),
+          var(--l) var(--b), var(--b) var(--l);
+      }
+      .link {
+        left: 34.6%;
+        top: 42.6%;
+        width: 6.4%;
+        height: 2px;
+        background: var(--hud);
+      }
+      .hud {
+        left: 3.6%;
+        top: 26%;
+        width: 31%;
+        display: flex;
+        flex-direction: column;
+        gap: 4%;
+      }
+      .box {
+        padding: 0.6em 0.7em;
+        border: 1px solid var(--hud);
+        background: rgba(0, 14, 5, 0.6);
+      }
+      .id figure {
+        position: relative;
+        margin-top: 0.4em;
+      }
+      .id img {
+        display: block;
+        width: 100%;
+        aspect-ratio: 1 / 1.05;
+        object-fit: cover;
+        object-position: 50% 20%;
+        filter: grayscale(1) contrast(1.1);
+      }
+      .id figcaption {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        padding: 0 0.5em;
+        background: var(--hud);
+        color: #04160a;
+      }
+
+      /* ---------- Case07x ---------- */
+      #case {
+        left: calc(1050 * var(--ux) - 260.5 * var(--u));
+        top: calc(654 * var(--uy) - 257.5 * var(--u));
+        width: calc(521 * var(--u));
+        height: calc(515 * var(--u));
+        background: linear-gradient(#e6effc, #8fb4ea);
+      }
+      #case > header {
+        background: none;
+        border: 0;
+      }
+      .paper {
+        flex: 1;
+        overflow: auto;
+        margin: 0 calc(10 * var(--u)) calc(10 * var(--u));
+        padding: calc(38 * var(--u)) calc(38 * var(--u)) calc(20 * var(--u));
+        background: #fff;
+        font: max(11px, calc(16 * var(--u))) / 1.25 "Azeret Mono", var(--mono);
+        color: #000;
+        letter-spacing: 0.03em;
+        font-variant-ligatures: none;
+      }
+      .paper .gap {
+        margin-top: 1.25em;
+      }
+      .paper b,
+      .paper button {
+        font-weight: 700;
+      }
+      .paper .links button::before {
+        content: ">";
+        margin-right: 0.8em;
+        color: #7f86e8;
+      }
+      .paper button {
+        display: block;
+        padding: 0;
+        text-align: left;
+        font-family: inherit;
+        font-size: inherit;
+        line-height: inherit;
+        color: inherit;
+        background: none;
+        border: 0;
+        cursor: pointer;
+      }
+      .paper button:hover {
+        text-decoration: underline;
+      }
+
+      /* ---------- penguin menu ---------- */
+      .tux {
+        left: calc(63 * var(--ux));
+        top: calc(905 * var(--uy));
+        z-index: 9;
+        width: calc(84 * var(--u));
+        height: calc(84 * var(--u));
+        padding: 0;
+        background: none;
+        border: 0;
+        cursor: pointer;
+      }
+      .tux img {
+        width: 100%;
+        height: 100%;
+      }
+      .menu {
+        position: fixed;
+        z-index: 9000;
+        left: calc(107 * var(--ux));
+        top: calc(732 * var(--uy));
+        width: max(190px, calc(205 * var(--u)));
+        padding: 8px 0;
+        list-style: none;
+        background: #fff;
+        border: 1px solid #000;
+        font: max(13px, calc(15 * var(--u))) / 1.3 var(--mono);
+        letter-spacing: 0.06em;
+      }
+      .menu[hidden] {
+        display: none;
+      }
+      .menu li {
+        padding: 3px 16px;
+        cursor: default;
+      }
+      .menu li:hover {
+        background: #000;
+        color: #fff;
+      }
+      .menu hr {
+        margin: 8px 0;
+        border: 0;
+        border-top: 1px dashed #000;
+      }
+
+      @media (max-aspect-ratio: 1/1) {
+        #cam {
+          left: 3vw;
+          top: 34px;
+          width: 94vw;
+          height: 56vh;
+        }
+        #case {
+          left: 5vw;
+          top: 46vh;
+          width: 90vw;
+          height: 46vh;
+        }
+        .tux {
+          left: 3vw;
+          top: auto;
+          bottom: 2vh;
+          width: 14vmin;
+          height: 14vmin;
+        }
+        .menu {
+          left: 3vw;
+          top: auto;
+          bottom: calc(2vh + 15vmin);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <img src="img/menu-logo.png" alt="" /><span>File</span><span>Edit</span
+      ><span>View</span><span>Special</span>
+    </header>
+
+    <section class="page">
+      <p class="cap">Missing person: Arda Whitlock</p>
+      <p class="small a">This file presents what is known about the subject</p>
+      <p class="small b">(last seen Nov 13, 2026 · Meridian Labs, New York)</p>
+      <div class="stats">
+        <p class="stat">
+          <b>32</b> is the age of Arda Whitlock, a mathematician at Meridian
+          Labs in New York.
+        </p>
+        <p class="stat">
+          <b>5′10″</b> tall, with dark brown hair and brown eyes.
+        </p>
+        <p class="stat">
+          <b>100</b> hours since he was last online. Last seen Nov 13, 11 p.m.,
+          leaving the lab.
+        </p>
+      </div>
+      <p class="note a">
+        Ref. 0147-A<br />Lorem ipsum dolor sit amet, consectetur adipiscing
+        elit.
+      </p>
+      <p class="note b">
+        Placeholder text. Sed do eiusmod tempor incididunt ut labore et dolore
+        magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+        laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
+        in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+        pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa
+        qui officia deserunt mollit anim id est laborum.
+      </p>
+      <p class="note c">
+        Sheet 1 of 1<br />Duis aute irure dolor in reprehenderit in voluptate
+        velit esse.
+      </p>
+      <p class="note d">Case 07x / Meridian Labs</p>
+      <p class="call">If seen, call 555-0248</p>
+    </section>
+
+    <section class="win" id="cam" data-pinned>
+      <header>
+        <span>cam_07 — fifth ave / 42nd</span
+        ><button class="x" aria-label="Close">×</button>
+      </header>
+      <div class="feed">
+        <img
+          class="street"
+          src="img/cam-street.jpg"
+          alt="Street camera footage"
+        />
+        <i class="grain"></i><i class="scan"></i><i class="vig"></i
+        ><i class="frame"></i>
+        <span class="tl">SYS DIAG: OK</span>
+        <span class="tr" id="clock">TIME: 23:47:32 UTC</span>
+        <span class="br">SYS DIAG: OK<br />SIGNAL: LOW LIGHT</span>
+        <i class="face"></i><i class="link"></i>
+        <div class="hud">
+          <div class="box id">
+            ID: A-W-0617
+            <figure>
+              <img src="img/front.jpg" alt="Front view" />
+              <figcaption>FRONT</figcaption>
+            </figure>
+          </div>
+          <div class="box">
+            SUBJECT: ARDA WHITLOCK<br />AGE: 32 · HEIGHT: 5′10″<br />HAIR: DARK
+            BROWN<br />EYES: BROWN<br />LAST SEEN: NOV 13, 23:00
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="win" id="case" data-pinned>
+      <header>
+        <span>Case07x</span><button class="x" aria-label="Close">×</button>
+      </header>
+      <div class="paper">
+        <p>
+          You’re a sharp detective, but your private agency is on the verge of
+          bankruptcy.
+        </p>
+        <p>
+          The office is three weeks behind on rent. The phone hasn’t rung in
+          days, and your last closed case paid in nothing but thank-yous.
+        </p>
+        <p>
+          Then a DM arrives, in reply to the little ad you posted on Reddit in a
+          moment of desperation.
+        </p>
+        <p class="gap">
+          <b>Find this missing person and save your business.</b>
+        </p>
+        <p class="gap"><b>Check the basic info</b></p>
+        <p class="links">
+          <button data-open="profile">LinkedIn profile</button
+          ><button data-open="news">Related News</button>
+        </p>
+      </div>
+    </section>
+
+    <section class="win" id="profile" data-src="linkedin.html" hidden>
+      <header>
+        <span>linkedin — arda whitlock</span
+        ><button class="x" aria-label="Close">×</button>
+      </header>
+      <iframe title="LinkedIn profile of Arda Whitlock"></iframe>
+    </section>
+    <section class="win" id="news" data-src="news.html" hidden>
+      <header>
+        <span>news — navier–stokes dispute</span
+        ><button class="x" aria-label="Close">×</button>
+      </header>
+      <iframe title="News article"></iframe>
+    </section>
+
+    <button class="at tux" id="tux" aria-label="Menu">
+      <img src="img/tux.png" alt="" />
+    </button>
+    <ul class="menu" id="menu" hidden>
+      <li>Back to desktop</li>
+      <hr />
+      <li>Alarm Clock</li>
+      <li>Calculator</li>
+      <li>Chooser</li>
+      <li>Control Panel</li>
+      <li>Key Caps</li>
+      <li>Note Pad</li>
+      <li>Puzzle</li>
+      <li>Scrapbook</li>
+    </ul>
+
+    <script src="windows.js"></script>
+    <script>
+      // camera clock
+      const clock = document.getElementById("clock"),
+        t0 = Date.now();
+      setInterval(() => {
+        const s =
+            23 * 3600 + 47 * 60 + 32 + Math.floor((Date.now() - t0) / 1000),
+          p = (n) => String(n).padStart(2, "0");
+        clock.textContent = `TIME: ${p(Math.floor(s / 3600) % 24)}:${p(
+          Math.floor(s / 60) % 60
+        )}:${p(s % 60)} UTC`;
+      }, 1000);
+
+      // photo shifts with the mouse
+      const feed = document.querySelector(".feed");
+      feed.addEventListener("pointermove", (e) => {
+        const r = feed.getBoundingClientRect();
+        feed.style.setProperty(
+          "--mx",
+          ((e.clientX - r.left) / r.width) * 2 - 1
+        );
+        feed.style.setProperty(
+          "--my",
+          ((e.clientY - r.top) / r.height) * 2 - 1
+        );
+      });
+      feed.addEventListener("pointerleave", () => {
+        feed.style.setProperty("--mx", 0);
+        feed.style.setProperty("--my", 0);
+      });
+
+      // penguin menu
+      const menu = document.getElementById("menu");
+      document.getElementById("tux").onclick = (e) => {
+        menu.hidden = !menu.hidden;
+        e.stopPropagation();
+      };
+      document.addEventListener("click", () => (menu.hidden = true));
+    </script>
+  </body>
+</html>

@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Loading — Last Seen Online</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      :root {
+        --neon: #6dff2a;
+      }
+      body {
+        position: relative;
+        overflow: hidden;
+        color: #000;
+        font-family: "Share Tech Mono", ui-monospace, Consolas, monospace;
+        font-size: clamp(14px, 2.5vw, 48px);
+        background: linear-gradient(
+          #e6e6ea,
+          #e2e2e7 22%,
+          #c4c4c9 47%,
+          #d3d3d8 58%,
+          #d8d8de
+        );
+        transition: opacity 0.7s;
+      }
+      body.out {
+        opacity: 0;
+      }
+
+      .layer {
+        position: absolute;
+        pointer-events: none;
+      }
+      .shade {
+        inset: 0;
+        background: linear-gradient(
+          90deg,
+          rgba(120, 120, 128, 0.35),
+          transparent 30%
+        );
+      }
+      .panel {
+        left: 57%;
+        top: 59%;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, #ececf6, #dcdce8);
+        -webkit-mask: linear-gradient(transparent, #000 25%),
+          linear-gradient(90deg, transparent, #000 25%);
+        -webkit-mask-composite: source-in;
+        mask: linear-gradient(transparent, #000 25%),
+          linear-gradient(90deg, transparent, #000 25%);
+        mask-composite: intersect;
+      }
+      .glitch {
+        inset: 0;
+      }
+      .glitch i {
+        position: absolute;
+        left: var(--x);
+        top: var(--y);
+        width: var(--w);
+        height: var(--h);
+        background: var(--c);
+        animation: glitch var(--t) steps(1) var(--d) infinite;
+      }
+      .glitch i.blip {
+        animation-name: blip;
+      }
+      .glitch i.sq {
+        aspect-ratio: 1;
+      }
+      @keyframes glitch {
+        0%,
+        100% {
+          transform: none;
+          opacity: 1;
+        }
+        7% {
+          transform: translateX(-7px) skewX(-10deg);
+        }
+        9% {
+          transform: translateX(10px);
+          opacity: 0.55;
+        }
+        11% {
+          transform: none;
+          opacity: 1;
+        }
+        46% {
+          transform: scaleX(1.6) translateX(6px);
+        }
+        47.5% {
+          transform: translateX(-5px);
+          opacity: 0.4;
+        }
+        49% {
+          transform: none;
+          opacity: 1;
+        }
+        81% {
+          transform: translateY(5px) skewX(12deg);
+        }
+        83% {
+          transform: none;
+        }
+      }
+      @keyframes blip {
+        0%,
+        100% {
+          opacity: 0;
+          transform: none;
+        }
+        10% {
+          opacity: 1;
+          transform: translateX(-9px);
+        }
+        13% {
+          opacity: 0;
+        }
+        40% {
+          opacity: 1;
+          transform: translateX(12px) scaleX(1.5);
+        }
+        43% {
+          opacity: 0;
+        }
+        70% {
+          opacity: 1;
+          transform: translateY(4px) skewX(-14deg);
+        }
+        72% {
+          opacity: 0;
+        }
+      }
+      .corner {
+        inset: 0;
+        background: radial-gradient(
+          60% 50% at 100% 100%,
+          rgba(40, 40, 50, 0.4),
+          transparent
+        );
+      }
+      .grain {
+        inset: 0;
+        opacity: 0.5;
+        background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .08 0'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>");
+      }
+
+      h1 {
+        position: absolute;
+        left: 1.7vw;
+        top: 65vh;
+        font-size: 1em;
+        font-weight: 400;
+        line-height: 1.3;
+        white-space: nowrap;
+      }
+      h1 .big {
+        font-size: 2.2em;
+      }
+      .br {
+        position: relative;
+        display: inline-block;
+        width: 4em;
+        text-align: center;
+      }
+      .br b {
+        font-weight: 400;
+      }
+      .dot {
+        display: inline-block;
+        width: 0.28em;
+        height: 0.28em;
+        margin: 0 0.5em 0 -0.2em;
+        border-radius: 50%;
+        vertical-align: 0.85em;
+        background: var(--neon);
+        box-shadow: 0 0 0.6em var(--neon);
+        animation: blink 1.2s steps(2) infinite;
+      }
+      @keyframes blink {
+        50% {
+          opacity: 0.35;
+        }
+      }
+
+      @media (max-aspect-ratio: 1/1) {
+        body {
+          font-size: 15px;
+        }
+        h1 {
+          white-space: normal;
+          left: 6vw;
+          right: 6vw;
+          top: 50vh;
+        }
+        h1 .big {
+          display: block;
+          margin: 0.2em 0;
+          font-size: 2.6em;
+        }
+        .br {
+          width: 4.2em;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <i class="layer shade"></i>
+    <div class="layer panel"></div>
+    <div class="layer glitch">
+      <i
+        style="
+          --x: 73%;
+          --y: 68%;
+          --w: 1.5vw;
+          --h: 2vh;
+          --c: linear-gradient(90deg, #9aa2d0, #c8a7b8 90%, #d46a6a);
+          --d: 0s;
+          --t: 2.4s;
+        "
+      ></i>
+      <i
+        style="
+          --x: 20%;
+          --y: 73%;
+          --w: 3.2vw;
+          --h: 2vh;
+          --c: linear-gradient(90deg, #8f9bd8, #d2a9bd);
+          --d: -0.9s;
+          --t: 2.8s;
+        "
+      ></i>
+      <i
+        style="
+          --x: 44%;
+          --y: 70%;
+          --w: 9vw;
+          --h: 1.2vh;
+          --c: #a9a9b8;
+          --d: -1.7s;
+          --t: 2.6s;
+        "
+      ></i>
+      <i
+        class="blip"
+        style="
+          --x: 12%;
+          --y: 59%;
+          --w: 0.9vw;
+          --h: 5vh;
+          --c: linear-gradient(90deg, #c9c9b4, #a8b0d8);
+          --d: -0.4s;
+          --t: 3s;
+        "
+      ></i>
+      <i
+        class="blip"
+        style="
+          --x: 8%;
+          --y: 77%;
+          --w: 4vw;
+          --h: 0.9vh;
+          --c: #a9a9b8;
+          --d: -1.3s;
+          --t: 2.3s;
+        "
+      ></i>
+      <i
+        class="sq"
+        style="
+          --x: 16%;
+          --y: 61%;
+          --w: 1.1vw;
+          --h: auto;
+          --c: linear-gradient(90deg, #8f9bd8, #d2a9bd);
+          --d: -0.6s;
+          --t: 2.5s;
+        "
+      ></i>
+      <i
+        class="sq"
+        style="
+          --x: 29%;
+          --y: 77%;
+          --w: 0.9vw;
+          --h: auto;
+          --c: linear-gradient(90deg, #c9c9b4, #a8b0d8);
+          --d: -1.5s;
+          --t: 2.9s;
+        "
+      ></i>
+      <i
+        class="sq blip"
+        style="
+          --x: 49%;
+          --y: 62%;
+          --w: 1.3vw;
+          --h: auto;
+          --c: linear-gradient(90deg, #9aa2d0, #c8a7b8 90%, #d46a6a);
+          --d: -2s;
+          --t: 2.7s;
+        "
+      ></i>
+      <i
+        class="sq"
+        style="
+          --x: calc(73% - 1.75vw);
+          --y: calc(70% + 9vh - 1.35vw);
+          --w: 1.35vw;
+          --h: auto;
+          --c: linear-gradient(90deg, #8f9bd8, #d2a9bd);
+          --d: -1.2s;
+          --t: 2.6s;
+        "
+      ></i>
+    </div>
+    <i class="layer corner"></i><i class="layer grain"></i>
+
+    <h1>
+      Last time seen online<i class="dot"></i>
+      <span class="big br">[ <b id="n">1</b> ]</span>
+      hours ago
+    </h1>
+
+    <script>
+      // count 1 → 100
+      const n = document.getElementById("n");
+      const DURATION = 3600,
+        t0 = performance.now();
+      let shown = 0;
+
+      function tick(now) {
+        const t = Math.min((now - t0) / DURATION, 1);
+        const v = Math.max(1, Math.round(100 * t * t * (3 - 2 * t)));
+        if (v !== shown) {
+          shown = v;
+          n.textContent = v;
+        }
+        if (t < 1) return requestAnimationFrame(tick);
+        setTimeout(() => document.body.classList.add("out"), 800);
+        setTimeout(() => (location.href = "intro.html"), 1500);
+      }
+      requestAnimationFrame(tick);
+    </script>
+  </body>
+</html>
