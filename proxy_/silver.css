@@ -18,7 +18,7 @@ body {
     linear-gradient(#e6e6ea, #e2e2e7 22%, #c4c4c9 47%, #d3d3d8 58%, #d8d8de);
 }
 
-/* ---------- top bar ---------- */
+/* top bar */
 .topbar {
   position: fixed; z-index: 10000; inset: 0 0 auto 0; height: clamp(26px, 1.9vw, 44px);
   display: flex; align-items: center; gap: .3em; padding-left: 1.6vw; background: #fff; border-bottom: 1px solid #000;
@@ -28,7 +28,7 @@ body {
 .topbar span { padding: .35em .9em; cursor: default; }
 .topbar span:hover { background: #000; color: #fff; }
 
-/* ---------- windows ---------- */
+/* windows */
 .win {
   position: fixed; z-index: 10; display: flex; flex-direction: column; background: var(--pale); border: 1px solid var(--line);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .7), 0 22px 44px rgba(40, 60, 110, .3);

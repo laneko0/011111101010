@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>shopping_log</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@400;500;700&family=Pixelify+Sans:wght@500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  /* page */
+  :root {
+    --paper: #e6e6ea; --ink: #1d1f2b;
+    --white: #fff; --violet: #c8a0ff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; color: var(--ink); font: 400 13px/22px "Azeret Mono", ui-monospace, Consolas, monospace;
+    background: linear-gradient(#e6e6ea, #e2e2e7 22%, #c4c4c9 47%, #d3d3d8 58%, #d8d8de) fixed;
+  }
+
+  /* background layers */
+  .layer { position: fixed; pointer-events: none; z-index: 0; }
+  .shade { inset: 0; background: linear-gradient(90deg, rgba(120, 120, 128, .35), transparent 30%); }
+  .panel {
+    left: 57%; top: 59%; right: 0; bottom: 0;
+    background: linear-gradient(135deg, #ececf6, #dcdce8);
+    -webkit-mask: linear-gradient(transparent, #000 25%), linear-gradient(90deg, transparent, #000 25%); -webkit-mask-composite: source-in;
+    mask: linear-gradient(transparent, #000 25%), linear-gradient(90deg, transparent, #000 25%); mask-composite: intersect;
+  }
+  .corner { inset: 0; background: radial-gradient(60% 50% at 100% 100%, rgba(40, 40, 50, .4), transparent); }
+  .grain { inset: 0; opacity: .5; background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .08 0'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>"); }
+  .glitch { inset: 0; }
+  .glitch i { position: absolute; left: var(--x); top: var(--y); width: var(--w); height: var(--h); background: var(--c); animation: glitch var(--t) steps(1) var(--d) infinite; }
+  .glitch i.blip, #fx canvas.blip { animation-name: blip; }
+  .glitch i.sq { aspect-ratio: 1; }
+  @keyframes glitch {
+    0%, 100% { transform: none; opacity: 1; }
+    7% { transform: translateX(-7px) skewX(-10deg); }
+    9% { transform: translateX(10px); opacity: .55; }
+    11% { transform: none; opacity: 1; }
+    46% { transform: scaleX(1.6) translateX(6px); }
+    47.5% { transform: translateX(-5px); opacity: .4; }
+    49% { transform: none; opacity: 1; }
+    81% { transform: translateY(5px) skewX(12deg); }
+    83% { transform: none; }
+  }
+  @keyframes blip {
+    0%, 100% { opacity: 0; transform: none; }
+    10% { opacity: 1; transform: translateX(-9px); }
+    13% { opacity: 0; }
+    40% { opacity: 1; transform: translateX(12px) scaleX(1.5); }
+    43% { opacity: 0; }
+    70% { opacity: 1; transform: translateY(4px) skewX(-14deg); }
+    72% { opacity: 0; }
+  }
+
+  /* order log */
+  #doc { position: relative; z-index: 1; padding: 28px 32px 0; overflow: hidden; }
+  #log div { height: 22px; white-space: pre; overflow: hidden; }
+  #log .c { opacity: .5; }
+
+  /* glitch blocks */
+  #fx { position: absolute; inset: 0; pointer-events: none; }
+  #fx canvas { position: absolute; image-rendering: pixelated; animation: glitch var(--t, 2.6s) steps(1) var(--d, 0s) infinite; }
+  body.busy #fx canvas { animation-duration: .5s; }
+
+  footer { height: 150px; }
+
+  /* compile button */
+  #dock { position: fixed; left: 0; right: 0; bottom: 24px; z-index: 6; display: flex; flex-direction: column; align-items: center; gap: 14px; pointer-events: none; }
+  #dock > * { pointer-events: auto; }
+  #compile {
+    display: block; padding: 14px 26px;
+    font: 400 17px/1 "Share Tech Mono", ui-monospace, Consolas, monospace; letter-spacing: .08em;
+    color: var(--ink); background: var(--white); border: 1px solid var(--ink); border-radius: 0;
+    box-shadow: 4px 4px 0 var(--ink); cursor: pointer;
+    transition: transform .12s, box-shadow .12s;
+  }
+  #compile:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--ink); }
+  #compile:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--ink); }
+  #compile:disabled { background: var(--violet); color: var(--ink); cursor: progress; }
+  /* receipts overlay */
+  #rover { position: fixed; inset: 0; z-index: 8; background: #fff; }
+  #rover iframe { width: 100%; height: 100%; border: 0; }
+
+  /* loading text */
+  #loader { position: fixed; left: 32px; bottom: 36px; z-index: 5; padding: 0 8px; background: #fff; opacity: 0; transition: opacity .3s; }
+  #loader.show { opacity: 1; }
+  #loader i { font-style: normal; display: inline-block; width: 2.2em; }
+  #loader i::after { content: ""; animation: dots 1.2s steps(4) infinite; }
+  @keyframes dots { 0% { content: ""; } 25% { content: "."; } 50% { content: ".."; } 75% { content: "..."; } }
+
+  /* small screens */
+  @media (max-width: 600px) { body { font-size: 12px; } #doc { padding: 20px 16px 0; } #loader { left: 16px; bottom: 92px; } }
+  @media (max-width: 420px) {
+    #doc { padding: 12px 10px 0; }
+    #dock { bottom: 12px; }
+    #compile { padding: 9px 12px; font-size: 13px; white-space: nowrap; }
+    #loader { left: 10px; bottom: 58px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .glitch i, #fx canvas { animation: none; } #loader i::after { animation: none; content: "..."; } }
+</style>
+</head>
+<body>
+
+<!-- background -->
+<i class="layer shade"></i>
+<div class="layer panel"></div>
+<div class="layer glitch" aria-hidden="true">
+  <i style="--x:62%;--y:9%;--w:12vw;--h:1.2vh;--c:#a9a9b8;--d:-.3s;--t:2.6s"></i>
+  <i style="--x:80%;--y:15%;--w:7vw;--h:.9vh;--c:linear-gradient(90deg,#9aa2d0,#b8a0e8);--d:-1.1s;--t:2.8s"></i>
+  <i class="blip" style="--x:40%;--y:27%;--w:9vw;--h:1.2vh;--c:#a9a9b8;--d:-1.9s;--t:2.4s"></i>
+  <i style="--x:8%;--y:20%;--w:5vw;--h:1.1vh;--c:linear-gradient(90deg,#8f9bd8,#d2a9bd);--d:-.7s;--t:3.0s"></i>
+  <i style="--x:55%;--y:48%;--w:11vw;--h:1.2vh;--c:#a9a9b8;--d:-1.7s;--t:2.6s"></i>
+  <i style="--x:70%;--y:66%;--w:8vw;--h:1vh;--c:linear-gradient(90deg,#9aa2d0,#c8a7d8);--d:-.5s;--t:2.9s"></i>
+  <i style="--x:20%;--y:73%;--w:3.2vw;--h:2vh;--c:linear-gradient(90deg,#8f9bd8,#d2a9bd);--d:-.9s;--t:2.8s"></i>
+  <i class="blip" style="--x:30%;--y:88%;--w:10vw;--h:1vh;--c:#a9a9b8;--d:-1.3s;--t:2.3s"></i>
+  <i style="--x:84%;--y:82%;--w:6vw;--h:1.1vh;--c:linear-gradient(90deg,#9aa2d0,#a77be0);--d:-2.2s;--t:2.7s"></i>
+  <i class="sq" style="--x:90%;--y:6%;--w:1.3vw;--h:auto;--c:linear-gradient(90deg,#9aa2d0,#a77be0);--d:-.2s;--t:2.5s"></i>
+  <i class="sq blip" style="--x:72%;--y:4%;--w:.9vw;--h:auto;--c:linear-gradient(90deg,#8f9bd8,#d2a9bd);--d:-1.4s;--t:2.9s"></i>
+  <i class="sq" style="--x:16%;--y:61%;--w:1.1vw;--h:auto;--c:linear-gradient(90deg,#8f9bd8,#d2a9bd);--d:-.6s;--t:2.5s"></i>
+  <i class="sq" style="--x:29%;--y:77%;--w:.9vw;--h:auto;--c:linear-gradient(90deg,#c9c9b4,#a8b0d8);--d:-1.5s;--t:2.9s"></i>
+  <i class="sq blip" style="--x:49%;--y:36%;--w:1.3vw;--h:auto;--c:linear-gradient(90deg,#9aa2d0,#b88be8);--d:-2.0s;--t:2.7s"></i>
+  <i class="sq" style="--x:6%;--y:42%;--w:1vw;--h:auto;--c:linear-gradient(90deg,#c9c9b4,#a8b0d8);--d:-.8s;--t:2.6s"></i>
+  <i class="sq" style="--x:60%;--y:80%;--w:1.35vw;--h:auto;--c:linear-gradient(90deg,#8f9bd8,#d2a9bd);--d:-1.2s;--t:2.6s"></i>
+  <i class="sq blip" style="--x:94%;--y:54%;--w:1.1vw;--h:auto;--c:linear-gradient(90deg,#9aa2d0,#a77be0);--d:-1.6s;--t:2.8s"></i>
+  <i class="sq" style="--x:38%;--y:12%;--w:1.2vw;--h:auto;--c:linear-gradient(90deg,#9aa2d0,#c8a7d8);--d:-.4s;--t:2.4s"></i>
+</div>
+<i class="layer corner"></i><i class="layer grain"></i>
+
+<!-- order log -->
+<div id="doc">
+  <div id="log"></div>
+  <div id="fx" aria-hidden="true"></div>
+  <footer></footer>
+</div>
+
+<!-- compile button and loading text -->
+<div id="dock">
+  <button id="compile" type="button">Compile the shopping log</button>
+</div>
+<div id="loader" aria-live="polite">loading<i></i></div>
+
+
+<script>
+// data
+const mulberry32 = a => () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+const rnd = mulberry32(32);
+const pick = a => a[rnd() * a.length | 0];
+const p2 = n => String(n).padStart(2, '0');
+const money = n => n.toFixed(2);
+
+const ITEMS = [
+  ["Kuru Toga mechanical pencil 0.5", "stationery", 6, 16], ["Staedtler Mars eraser", "stationery", 2, 5],
+  ["graph paper pad, 5mm grid", "paper", 4, 12], ["Moleskine squared notebook", "paper", 14, 24],
+  ["whiteboard markers x12", "stationery", 8, 18], ["dustless chalk x24", "stationery", 6, 14],
+  ["Lamy Safari fountain pen", "stationery", 28, 40], ["blue fountain-pen ink", "stationery", 9, 20],
+  ["Concrete Mathematics (Knuth)", "books", 38, 64], ["Godel, Escher, Bach", "books", 18, 30],
+  ["Princeton Companion to Mathematics", "books", 60, 95], ["Visual Complex Analysis", "books", 42, 70],
+  ["Hardy & Wright, Theory of Numbers", "books", 45, 80], ["Proofs from THE BOOK", "books", 28, 45],
+  ["Rubik's cube 3x3, speed edition", "puzzle", 9, 22], ["tangram set, walnut", "puzzle", 14, 30],
+  ["d12 dodecahedron die", "puzzle", 3, 9], ["pocket slide rule", "vintage", 20, 60],
+  ["Moebius strip scarf, wool", "clothes", 24, 48], ["grey cardigan", "clothes", 40, 90], ["running shoes", "clothes", 70, 130],
+  ["oolong tea 250g", "tea", 12, 26], ["espresso beans 1kg", "coffee", 18, 34],
+  ["instant noodles x30", "food", 12, 24], ["sourdough starter kit", "food", 11, 20],
+  ["TI-89 Titanium calculator", "gadget", 90, 150], ["noise-cancelling headphones", "gadget", 120, 320],
+  ["mechanical keyboard, 60%", "gadget", 80, 180], ["bike light, USB", "gadget", 10, 26],
+  ["Mathematica licence (annual)", "software", 180, 420], ["Overleaf premium (annual)", "software", 70, 160],
+  ["standing desk mat", "home", 30, 60], ["desk lamp, 4000K", "home", 25, 70], ["ergonomic chair", "home", 160, 420],
+  ["prime-number poster, A1", "art", 18, 40], ["aloe polyphylla (the spiral one)", "plants", 16, 34],
+  ["train pass, campus <-> home", "travel", 30, 95], ["conference ticket", "travel", 120, 480],
+  ["gift for sister", "gift", 20, 80], ["vitamin D, 120 caps", "health", 9, 18], ["melatonin 3mg", "health", 7, 14],
+];
+const EVENTS = [
+  ["2013-01", "enrolled. BSc mathematics. first student discount."],
+  ["2013-03", "first all-nighter. the coffee budget doubles."],
+  ["2013-05", "exam season. sleep_hours < 4, every day."],
+  ["2013-09", "second year. number theory, finally."],
+  ["2013-12", "winter break. problem set due. nothing else matters."],
+];
+const CONDS = ["proof.stuck", "sleep_hours < 4", "deadline_in_hours < 72", "coffee.left == 0", "conjecture.falsified", "mood == 'prime'", "rain and not umbrella", "paper.rejected"];
+
+const orders = Array.from({ length: 280 }, () => {
+  const [name, tag, lo, hi] = pick(ITEMS);
+  const qty = hi <= 100 && rnd() < .2 ? 2 + (rnd() * 3 | 0) : 1;
+  const unit = Math.round((lo + rnd() * (hi - lo)) * 100) / 100;
+  const when = new Date(Date.UTC(2013, 0, 1) + rnd() * (Date.UTC(2013, 11, 31) - Date.UTC(2013, 0, 1)));
+  when.setUTCHours(rnd() < .45 ? rnd() * 5 | 0 : 8 + (rnd() * 15 | 0), rnd() * 60 | 0);
+  return { name, tag, qty, unit, total: Math.round(unit * qty * 100) / 100, when };
+}).sort((a, b) => a.when - b.when);
+
+const iso = d => d.toISOString().slice(0, 10), hm = d => d.toISOString().slice(11, 16);
+const sum = orders.reduce((s, o) => s + o.total, 0);
+
+// log lines
+const lines = [
+  '#!/usr/bin/env python3',
+  '# shopping_log.py    subject: Arda Whitlock, 32, mathematician (number theory)',
+  `# exported 2026-11-23    ${orders.length} orders    year 2013    do not edit by hand`,
+  '',
+  'import cart, sleep, proof',
+  '',
+  'owner = "A. Whitlock"', 'born  = 1994', 'log   = {}', '',
+];
+let ev = 0;
+orders.forEach((o, i) => {
+  while (ev < EVENTS.length && iso(o.when).slice(0, 7) >= EVENTS[ev][0]) { lines.push('', `# ${EVENTS[ev][0]}  ${EVENTS[ev][1]}`, ''); ev++; }
+  const id = i + 1, d = iso(o.when), t = hm(o.when);
+  const f = rnd();
+  lines.push(
+    f < .3 ? `order(${id}, "${d} ${t}", buy("${o.name}", qty=${o.qty}, price=${money(o.unit)}))  # ${o.tag}` :
+    f < .5 ? `log[${id}] = {"date": "${d}", "item": "${o.name}", "total": ${money(o.total)}}` :
+    f < .75 ? `${d}  ${o.tag.padEnd(10)} ${o.name.padEnd(36, '.')} $${money(o.total).padStart(8)}` :
+    `if ${pick(CONDS)}: buy("${o.name}")  # ${t}  $${money(o.total)}`
+  );
+});
+lines.forEach(t => {
+  const d = document.createElement('div');
+  d.textContent = t || ' ';
+  if (t.startsWith('#')) d.className = 'c';
+  document.getElementById('log').append(d);
+});
+
+// glitch
+const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const BLUE = '#7f86e8', GREY = '#d0d0e0';
+const PAL = [BLUE, BLUE, BLUE, GREY, GREY];
+const fx = document.getElementById('fx'), doc = document.getElementById('doc'), log = document.getElementById('log');
+const CELL = 4, R = Math.random;
+let blocks = [];
+
+function paint(cv, kind, color) {
+  const g = cv.getContext('2d'), w = cv.width, h = cv.height;
+  g.clearRect(0, 0, w, h); g.fillStyle = color;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    const on = kind === 'checker' ? ((x + y) & 1) === 0 && R() < .3 + .7 * y / h
+             : (y & 1) === 0;
+    if (on) g.fillRect(x, y, 1, 1);
+  }
+  for (let i = 3 + (w * h / 380 | 0); i--;) g.clearRect(R() * w | 0, R() * h | 0, 2 + R() * 4 | 0, 2 + R() * 3 | 0);
+  g.fillStyle = color === BLUE ? GREY : BLUE;
+  for (let i = 8; i--;) g.fillRect(R() * w | 0, R() * h | 0, 1 + R() * 2 | 0, 1 + R() * 2 | 0);
+}
+
+function buildBlocks() {
+  fx.textContent = ''; blocks = [];
+  const W = doc.clientWidth, H = doc.scrollHeight, maxC = Math.max(8, (W / CELL | 0) - 4);
+  const count = Math.round(H / 330);
+  for (let n = 0; n < count; n++) {
+    const kind = R() < .55 ? 'checker' : 'scan', flat = R() < .5;
+    const cv = document.createElement('canvas');
+    cv.width = Math.min(maxC, flat ? 40 + R() * 60 | 0 : 14 + R() * 18 | 0);
+    cv.height = flat ? 6 + R() * 10 | 0 : cv.width;
+    cv.style.width = cv.width * CELL + 'px'; cv.style.height = cv.height * CELL + 'px';
+    cv.style.left = (R() * (W - cv.width * CELL) / CELL | 0) * CELL + 'px';
+    cv.style.top = (Math.max(0, Math.min(H - cv.height * CELL, (n + R()) * H / count)) / CELL | 0) * CELL + 'px';
+    cv.style.setProperty('--t', 2.3 + R() * .8 + 's'); cv.style.setProperty('--d', -R() * 2.5 + 's');
+    if (R() < .25) cv.className = 'blip';
+    paint(cv, kind, PAL[R() * PAL.length | 0]);
+    fx.append(cv);
+  }
+}
+
+// loading text
+const loader = document.getElementById('loader');
+const onScroll = () => { if (scrollY > 160) loader.classList.add('show'); };
+addEventListener('scroll', onScroll, { passive: true });
+
+// compile button
+const btn = document.getElementById('compile');
+
+function openReceipts() {
+  let o = document.getElementById('rover');
+  if (!o) {
+    o = document.createElement('div'); o.id = 'rover';
+    o.innerHTML = '<iframe src="receipts.html?v=7" title="Receipts"></iframe>';
+    document.body.append(o);
+  }
+  o.hidden = false;
+}
+addEventListener('message', e => {
+  if (e.data && e.data.type === 'close-receipts') document.getElementById('rover').hidden = true;
+});
+btn.addEventListener('click', () => {
+  btn.disabled = true; btn.textContent = 'Compiling...'; document.body.classList.add('busy');
+  setTimeout(() => {
+    document.body.classList.remove('busy');
+    btn.disabled = false; btn.textContent = 'Compile again';
+    openReceipts();
+  }, 2200);
+});
+
+// start
+function init() { buildBlocks(); onScroll(); }
+(document.fonts ? document.fonts.ready : Promise.resolve()).then(init);
+let rw = innerWidth; addEventListener('resize', () => { if (innerWidth !== rw) { rw = innerWidth; buildBlocks(); onScroll(); } });
+</script>
+</body>
+</html>

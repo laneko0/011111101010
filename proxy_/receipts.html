@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>receipts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@400;500;700&family=Pixelify+Sans:wght@500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  /* page */
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; overflow: hidden; background: #fff; }
+  /* photo, header and arrows */
+  #rcpt { position: fixed; inset: 0; z-index: 8; overflow: hidden; container-type: size; background: #fff; --ink: #2f6bff; color: var(--ink); font: 400 12px/1.4 "Azeret Mono", ui-monospace, monospace; }
+  #rart { position: absolute; inset: 0; opacity: .6; pointer-events: none; }
+  #rart[data-style="dither"] { opacity: .85; }
+  #rart[data-style="halftone"] { opacity: .7; }
+  #rart canvas, #rart img { display: block; width: 100%; height: 100%; }
+  #rart pre { margin: 0; color: var(--ink); white-space: pre; overflow: hidden; font-family: "Azeret Mono", ui-monospace, monospace; }
+  #rclose { padding: 0; font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  #rclose:hover { text-decoration: underline; }
+  #rcpt > header { position: absolute; top: 0; left: 0; right: 0; z-index: 2; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: clamp(8px, 3cqw, 12px) clamp(10px, 4cqw, 16px); background: #fff; white-space: nowrap; font: 400 clamp(8px, 2.9cqw, 13px)/1 "Share Tech Mono", ui-monospace, monospace; letter-spacing: .08em; text-transform: uppercase; }
+  #rcount { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  #rclose { flex: none; }
+  .nav { font: inherit; position: absolute; top: 50%; z-index: 2; width: 40px; height: 80px; margin-top: -40px; padding: 0; color: var(--ink); background: #fff; border: 0; cursor: pointer; }
+  .nav:hover { background: #efeff2; }
+  .nav.prev { left: 0; } .nav.next { right: 0; }
+  .nav svg { display: block; margin: auto; }
+  .nav.next svg { transform: scaleX(-1); }
+  #rlist { position: absolute; inset: 0; }
+
+  /* receipt text */
+  .rc { position: absolute; inset: 0; z-index: 1; display: flex; flex-direction: column; overflow: auto; scrollbar-width: none; padding: 48px max(56px, 6cqw) 4cqh; text-shadow: 0 0 4px #fff, 0 0 8px #fff, 0 0 8px #fff; }
+  .rc .main, .rc .side, .rc .sm { font-weight: 500; }
+  .rc[hidden] { display: none; }
+  .rc h3 { margin: 0 0 6px; font: 700 clamp(26px, 8cqw, 110px)/1 "Azeret Mono", ui-monospace, monospace; letter-spacing: -.02em; }
+  .rc .t2 { font-family: "Pixelify Sans", ui-monospace, monospace; }
+  .rc .t2, .rc .big { text-shadow: none; }
+  .rc .big { color: #2f6bff; filter: drop-shadow(0 0 2px #fff) drop-shadow(0 0 4px #fff); }
+  .rc .big span { color: inherit; }
+  .rc .t2 { align-self: flex-start; letter-spacing: .02em; }
+  .k0 { color: #2f6bff; } .k1 { color: #ff6ad5; } .k2 { color: #35d0ff; } .k3 { color: #7a6bff; } .k4 { color: #b8f03a; }
+  .rc .sm { margin: 0; font-size: 11px; }
+  .rc .big { width: fit-content; margin: auto 0 auto auto; padding: 16px 0; text-align: right; font: 700 clamp(18px, 4.6cqw, 64px)/1.1 "Azeret Mono", ui-monospace, monospace; }
+  .rc .body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px 6cqw; align-items: end; }
+  @container (max-width: 640px) { .rc .body { grid-template-columns: minmax(0, 1fr); } }
+  .rc hr { margin: 7px 0; border: 0; border-top: 1px dashed var(--ink); }
+  .rc .row { display: flex; justify-content: space-between; gap: 8px; }
+  .rc .it { display: grid; grid-template-columns: 1fr auto auto; gap: 0 14px; }
+  .rc .side { text-align: right; }
+  .rc svg.bar { fill: currentColor; display: block; width: 100%; max-width: 260px; height: 44px; margin: 10px 0 4px auto; }
+  .rc .num { font-weight: 500; letter-spacing: .04em; }
+
+</style>
+</head>
+<body>
+<section id="rcpt" aria-label="Recent shopping history">
+  <div id="rart" aria-hidden="true"></div>
+  <header><span id="rcount"></span><button id="rclose" type="button">close &times;</button></header>
+  <button class="nav prev" id="rprev" type="button" aria-label="Previous receipt"><svg width="24" height="48" viewBox="0 0 24 48" aria-hidden="true"><path d="M17 8 L6 24 L17 40" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
+  <button class="nav next" id="rnext" type="button" aria-label="Next receipt"><svg width="24" height="48" viewBox="0 0 24 48" aria-hidden="true"><path d="M17 8 L6 24 L17 40" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
+  <div id="rlist"></div>
+</section>
+
+<script>
+const rcpt = document.getElementById('rcpt'), rlist = document.getElementById('rlist'), rcount = document.getElementById('rcount');
+const R = Math.random;
+let imgs = null, cur = 0;
+
+// data
+const TAX = .08875;
+const RCPTS = [
+  { name: 'NUTHOUSE!', cls: 't2', sub: ['Roasters & snack bar', 'Tax ID: 12-3456789', '45 Bleecker St, New York', 'Tel: (212) 555-0147'],
+    when: '2026-11-10 22:43', reg: '01', cashier: 'Morgan', term: 'T-0192837', slip: 'No. 9876', call: 'Roasted peanuts',
+    items: [['Roasted peanuts 500g', 2, 3.5, true]], cash: 20, art: ['peanut', 'dither', .86], code: '2026111022435401' },
+  { name: 'OPTIC LAB', cls: 't2', sub: ['Eyewear & repairs', 'Tax ID: 98-7654321', '128 W 14th St, New York', 'Tel: (212) 555-0198'],
+    when: '2026-11-12 19:52', reg: '02', cashier: 'Priya', term: 'T-02', slip: 'No. 1023', call: 'Smart glasses',
+    items: [['Smart glasses, black', 1, 449, false], ['Lens cloth', 1, 4, false]], card: '4417', art: ['glasses', 'dither', .86], code: '2026111219520201' },
+];
+
+// receipt layout
+const usd = n => '$' + n.toFixed(2);
+const letters = t => [...t].map((c, i) => c === ' ' ? ' ' : `<span class="k${i % 5}">${c}</span>`).join('');
+const row = (a, b) => `<div class="row"><span>${a}</span><span>${b}</span></div>`;
+
+function barcode(code) {
+  let x = 4, bars = '';
+  [...code].forEach((c, i) => {
+    [(c % 3) + 1, (c * 2 + 1) % 3 + 1, (+c + i) % 2 + 1].forEach(w => { bars += `<rect x="${x}" width="${w}" height="40"/>`; x += w + 1 + (w & 1); });
+  });
+  return `<svg class="bar" viewBox="0 0 ${x + 4} 40" preserveAspectRatio="none" aria-hidden="true">${bars}</svg>`;
+}
+
+function receipt(r) {
+  const sub = r.items.reduce((s, [, q, u]) => s + q * u, 0);
+  const tax = Math.round(r.items.reduce((s, [, q, u, ex]) => s + (ex ? 0 : q * u), 0) * TAX * 100) / 100, total = sub + tax;
+  return `<article class="rc" hidden>
+    <h3 class="${r.cls}">${letters(r.name)}</h3>
+    <p class="sm">${r.sub.join(' &middot; ')}</p>
+    <p class="big">${letters(r.call)}</p>
+    <div class="body">
+      <div class="main">
+        ${row(r.when, 'Reg: ' + r.reg)}${row('Cashier: ' + r.cashier, 'Term: ' + r.term)}${row('Receipt', r.slip)}<hr>
+        ${r.items.map(([n, q, u, ex]) => `<div class="it"><span>${n}${ex ? ' *' : ''}</span><span>${q}x</span><span>${usd(q * u)}</span></div>`).join('')}<hr>
+        ${row('Subtotal', usd(sub))}${row('Tax (8.875%)', usd(tax))}${row('Total', usd(total))}
+        ${r.cash ? row('Cash', usd(r.cash)) + row('Change', usd(r.cash - total)) : row('Card ****' + r.card, usd(total))}
+        ${r.items.some(i => i[3]) ? '<hr><p class="sm">* Tax-exempt grocery item</p>' : ''}
+      </div>
+      <div class="side">
+        <p class="sm">Thank you for your purchase!<br>We hope to see you again soon.<br>&hearts; Have a sweet, lucky day &hearts;</p>
+        ${barcode(r.code)}<div class="num">${r.code}</div>
+      </div>
+    </div>
+  </article>`;
+}
+
+// photo art
+const IMG = { peanut: 'img/peanut-small.jpg', glasses: 'img/smart-glasses.jpg' };
+const load = src => new Promise(res => { const i = new Image(); i.onload = () => res(i); i.onerror = () => res(null); i.src = src; });
+
+function grey(img, cols, rows, W, H, white) {
+  const c = document.createElement('canvas'); c.width = cols; c.height = rows;
+  const g = c.getContext('2d', { willReadFrequently: true });
+  g.fillStyle = '#fff'; g.fillRect(0, 0, cols, rows);
+  const k = Math.min(W / img.width, W * 9 / 16 / img.height, H / img.height) * .9;
+  const dw = img.width * k * cols / W, dh = img.height * k * rows / H;
+  g.drawImage(img, (cols - dw) / 2, (rows - dh) / 2, dw, dh);
+  const d = g.getImageData(0, 0, cols, rows).data, v = Array.from({ length: cols * rows }, (_, i) => (d[i * 4] * .3 + d[i * 4 + 1] * .59 + d[i * 4 + 2] * .11) / 255);
+  const s = Float32Array.from(v).sort(), lo = s[s.length * .02 | 0], hi = s[s.length * .88 | 0];
+  return v.map(x => { const y = Math.max(0, Math.min(1, (x - lo) / (hi - lo || 1))); return y > white ? 1 : y ** 1.3; });
+}
+
+function paintArt() {
+  const box = document.getElementById('rart'), W = rcpt.clientWidth, H = rcpt.clientHeight, [key, style, white] = RCPTS[cur].art, img = imgs && imgs[key];
+  box.textContent = ''; box.dataset.style = style;
+  if (!img || !W) return;
+  try {
+    if (style === 'ascii') {
+      const fs = Math.max(7, Math.min(12, W / 110)), m = document.createElement('canvas').getContext('2d');
+      m.font = `${fs}px "Azeret Mono"`;
+      const cols = Math.ceil(W / m.measureText('M').width), rows = Math.ceil(H / fs), v = grey(img, cols, rows, W, H, white), RAMP = '@%#*+=-:. ';
+      const pre = document.createElement('pre');
+      pre.style.cssText = `font-size:${fs}px;line-height:${fs}px`;
+      pre.textContent = Array.from({ length: rows }, (_, y) => Array.from({ length: cols }, (_, x) => RAMP[Math.min(9, v[y * cols + x] * 10 | 0)]).join('')).join('\n');
+      box.append(pre);
+    } else {
+      const cell = style === 'dither' ? 3 : 7, cols = Math.ceil(W / cell), rows = Math.ceil(H / cell), v = grey(img, cols, rows, W, H, white);
+      const k = style === 'dither' ? 1 : cell, c = document.createElement('canvas'), g = c.getContext('2d');
+      c.width = cols * k; c.height = rows * k;
+      const ART = ['#2f6bff', '#7a6bff', '#ff6ad5', '#35d0ff', '#b8f03a'];
+      const zoom = 145 * cell / (.9 * Math.min(W, H * 16 / 9));
+      const tone = (col, row, b) => {
+        const x = (col - cols / 2) * zoom + 81, y = (row - rows / 2) * zoom + 91;
+        const n = Math.sin(x * .06 + y * .04) + Math.sin(y * .085 - x * .035) + Math.sin((x + y) * .025);
+        const jump = (Math.imul((y / 3 | 0) * 2654435761 ^ (x / 40 | 0) * 40503, 2246822519) >>> 0) % 9 === 0 ? 2 : 0;
+        return ((Math.floor((n + 3) / 6 * 5 + b * 2) + jump) % 5 + 5) % 5;
+      };
+      const B4 = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+      for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
+        const b = v[y * cols + x], t = tone(x, y, b);
+        if (style === 'dither') {
+          if (b * 16 >= B4[(y % 4) * 4 + x % 4] + .5) continue;
+          g.fillStyle = ART[t]; g.fillRect(x, y, 1, 1);
+          if ((x * 7 + y * 13) % 5 === 0) { g.fillStyle = ART[(t + 2) % 5]; g.fillRect(x + 1, y, 1, 1); }
+        } else { g.fillStyle = ART[t]; g.beginPath(); g.arc(x * k + k / 2, y * k + k / 2, (1 - b) * k * .62, 0, 7); g.fill(); }
+      }
+      if (style === 'dither') c.style.imageRendering = 'pixelated';
+      box.append(c);
+    }
+  } catch (e) {
+    const i = img.cloneNode(); i.style.cssText = 'object-fit:contain;filter:grayscale(1) contrast(3)'; box.append(i);
+  }
+}
+
+// controls
+function show(i) {
+  cur = (i + RCPTS.length) % RCPTS.length;
+  rlist.querySelectorAll('.rc').forEach((el, k) => { el.hidden = k !== cur; });
+  rcount.textContent = `shopping_log.compiled — receipt ${cur + 1} / ${RCPTS.length}`;
+  paintArt();
+}
+
+
+document.getElementById('rclose').addEventListener('click', () => parent.postMessage({ type: 'close-receipts' }, '*'));
+document.getElementById('rprev').addEventListener('click', () => show(cur - 1));
+document.getElementById('rnext').addEventListener('click', () => show(cur + 1));
+addEventListener('keydown', e => {
+  if (e.key === 'ArrowLeft') show(cur - 1);
+  else if (e.key === 'ArrowRight') show(cur + 1);
+});
+
+let t; addEventListener('resize', () => { clearTimeout(t); t = setTimeout(paintArt, 120); });
+
+// start
+(async () => {
+  if (document.fonts) await document.fonts.ready;
+  imgs = { peanut: await load(IMG.peanut), glasses: await load(IMG.glasses) };
+  rlist.innerHTML = RCPTS.map(receipt).join('');
+  show(0);
+})();
+</script>
+</body>
+</html>

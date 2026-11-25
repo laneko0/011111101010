@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Media — Last Seen Online</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@700&family=Share+Tech+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        height: 100%;
+        overflow: hidden;
+      }
+      body {
+        font: 12px/1 "Share Tech Mono", ui-monospace, monospace;
+        user-select: none;
+        touch-action: none;
+      }
+
+      /* stage */
+      #stage {
+        position: fixed;
+        inset: 0;
+      }
+      #stage > * {
+        position: absolute;
+        left: 0;
+        top: 0;
+        will-change: transform;
+      }
+      #bg {
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+        pointer-events: none;
+      }
+
+      /* project rows */
+      .thumb {
+        width: 94px;
+        height: 59px;
+        object-fit: cover;
+        cursor: pointer;
+      }
+      .pic {
+        overflow: hidden;
+        cursor: pointer;
+      }
+      .pic img {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 100%;
+        transform: translate(-50%, -50%);
+        object-fit: cover;
+      }
+      .idx,
+      .ttl,
+      .foot {
+        color: #fff;
+        mix-blend-mode: difference;
+      }
+      .idx {
+        width: 60px;
+        text-align: right;
+        cursor: pointer;
+      }
+      .ttl {
+        cursor: pointer;
+        transform-origin: 0 50%;
+        white-space: nowrap;
+      }
+      .ttl b {
+        display: block;
+        font: 700 28px/0.95 "Pixelify Sans", sans-serif;
+        text-transform: uppercase;
+      }
+      .ttl small {
+        display: block;
+        margin-top: 0.8em;
+        opacity: var(--f);
+      }
+
+      /* pinned clues */
+      .pic.on {
+        outline: 3px solid #5dff7a;
+        outline-offset: -3px;
+      }
+      .thumb.on {
+        outline: 2px solid #5dff7a;
+        outline-offset: -2px;
+      }
+
+      /* cursor tag and footer */
+      #tag {
+        padding: 9px 12px;
+        background: #5dff7a;
+        color: #000;
+        border-radius: 3px;
+        font-size: 13px;
+        pointer-events: none;
+        transition: opacity 0.2s;
+      }
+      .foot {
+        position: fixed !important;
+        top: auto !important;
+        bottom: 24px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .foot a {
+        color: inherit;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <main id="stage">
+      <iframe id="bg" src="galaxy.html?v=6" title="" tabindex="-1"></iframe>
+      <div id="tag">Pin as clue</div>
+    </main>
+
+    <script>
+      // pictures
+      const ITEMS = [
+        {
+          t: ["BILLY", "PEANUT PAL"],
+          kind: "GUEST / FRIEND",
+          src: "img/repo/billy.jpg",
+          pos: "50% 55%",
+        },
+        {
+          t: ["LIVE", "GLOW SEA"],
+          kind: "TOKYO LIVE HOUSE",
+          src: "img/repo/live.jpg",
+          pos: "50% 40%",
+        },
+        {
+          t: ["AONA1", "SURREAL DREAM"],
+          kind: "FORMIDABLE ANGEL ARCHIVE",
+          src: "img/repo/aona1.jpg",
+          pos: "50% 40%",
+        },
+        {
+          t: ["AONA2", "PINK LULLABY"],
+          kind: "FORMIDABLE ANGEL ARCHIVE",
+          src: "img/repo/aona2.jpg",
+          pos: "50% 35%",
+        },
+        {
+          t: ["AONA3", "COTTON STAR"],
+          kind: "FORMIDABLE ANGEL ARCHIVE",
+          src: "img/repo/aona3.png",
+          pos: "55% 30%",
+        },
+        {
+          t: ["AONA5", "OXYGEN"],
+          kind: "FORMIDABLE ANGEL ARCHIVE",
+          src: "img/repo/aona5.jpg",
+          pos: "30% 55%",
+        },
+      ];
+      const N = ITEMS.length,
+        stage = document.getElementById("stage"),
+        tag = document.getElementById("tag");
+      const wrap = (x) => ((((x + N / 2) % N) + N) % N) - N / 2;
+      const ease = (t) => t * t * (3 - 2 * t);
+
+      // rows
+      const add = (tagName, cls, html = "") => {
+        const e = document.createElement(tagName);
+        e.className = cls;
+        e.innerHTML = html;
+        stage.insertBefore(e, tag);
+        return e;
+      };
+      const rows = ITEMS.map((it, i) => {
+        const r = {
+          i,
+          thumb: add("img", "thumb"),
+          pic: add(
+            "div",
+            "pic",
+            `<img src="${it.src}" alt="" style="object-position:${
+              it.pos
+            }; object-fit:${it.fit || "cover"}">`
+          ),
+          idx: add("span", "idx", `(${String(i + 1).padStart(3, "0")})`),
+          ttl: add(
+            "div",
+            "ttl",
+            `<b>${it.t.join("<br>")}</b><small>${it.kind}</small>`
+          ),
+        };
+        r.thumb.src = it.src;
+        for (const e of [r.thumb, r.idx, r.ttl])
+          e.onclick = () => {
+            if (moved < 6) target += wrap(i - target);
+          };
+        r.pic.onclick = () => {
+          if (moved >= 6) return;
+          if (Math.abs(wrap(i - target)) < 0.5) {
+            selected.has(i) ? selected.delete(i) : selected.add(i);
+            progress();
+          } else target += wrap(i - target);
+        };
+        return r;
+      });
+
+      // pinned clues
+      const selected = new Set();
+      function progress() {
+        for (const r of rows) {
+          const on = selected.has(r.i);
+          r.pic.classList.toggle("on", on);
+          r.thumb.classList.toggle("on", on);
+          r.ttl.querySelector("small").textContent =
+            ITEMS[r.i].kind + (on ? " / PINNED" : "");
+        }
+      }
+
+      // sizing
+      let vw, vh, P, H, W;
+      const size = () => {
+        vw = innerWidth;
+        vh = innerHeight;
+        P = vh * 0.084;
+        H = Math.min(vh * 0.53, (vw * 0.47) / 1.6);
+        W = H * 1.6;
+        for (const r of rows) {
+          r.pic.style.width = W + "px";
+          r.pic.firstChild.style.height = H + "px";
+        }
+      };
+      addEventListener("resize", size);
+      size();
+
+      // scrolling
+      let pos = 0,
+        target = 0,
+        timer,
+        drag = null,
+        moved = 0,
+        mx = -1,
+        my = -1;
+      const settle = () => {
+        clearTimeout(timer);
+        timer = setTimeout(() => (target = Math.round(target)), 140);
+      };
+      addEventListener(
+        "wheel",
+        (e) => {
+          target += e.deltaY * 0.0015;
+          settle();
+        },
+        { passive: true }
+      );
+      addEventListener("pointerdown", (e) => {
+        drag = e.clientY;
+        moved = 0;
+      });
+      addEventListener("pointerup", () => (drag = null));
+      addEventListener("pointermove", (e) => {
+        mx = e.clientX;
+        my = e.clientY;
+        if (drag === null) return;
+        moved += Math.abs(e.clientY - drag);
+        target -= (e.clientY - drag) / P;
+        drag = e.clientY;
+        settle();
+      });
+      addEventListener("keydown", (e) => {
+        if (e.key === "ArrowDown") target = Math.round(target) + 1;
+        if (e.key === "ArrowUp") target = Math.round(target) - 1;
+      });
+
+      // animation
+      let tx = 0,
+        ty = 0;
+
+      function frame() {
+        pos += (target - pos) * 0.1;
+        const cx = vw / 2,
+          cy = vh / 2,
+          act = ((Math.round(pos) % N) + N) % N;
+
+        for (const r of rows) {
+          const d = wrap(r.i - pos),
+            a = Math.abs(d),
+            g = ease(Math.min(a, 1));
+          const f = 1 / (1 + (1.6 * a) ** 2);
+          const y = cy + d * P + Math.sign(d) * (H / 2) * g;
+          const h = H * (1 - g),
+            op = Math.min(1, (N / 2 - a) * 2);
+          r.thumb.style.transform = `translate(${
+            cx - 206 - (W / 2 - 6) * f
+          }px, ${y - 29.5}px)`;
+          r.pic.style.transform = `translate(${cx - W / 2}px, ${y - h / 2}px)`;
+          r.pic.style.height = h + "px";
+          r.idx.style.transform = `translate(${
+            cx - 36 - (W / 2 - 6) * f - 60
+          }px, ${y - 6}px)`;
+          r.ttl.style.transform = `translate(${
+            cx + 16 + (W / 2 + 14) * f
+          }px, ${y}px) translateY(-50%) scale(${1 + 0.4 * f})`;
+          r.ttl.style.setProperty("--f", f);
+          for (const e of [r.thumb, r.pic, r.idx, r.ttl]) e.style.opacity = op;
+        }
+
+        const p = rows[act].pic.getBoundingClientRect(),
+          over = mx > p.left && mx < p.right && my > p.top && my < p.bottom;
+        tx += (mx - tx) * 0.2;
+        ty += (my - ty) * 0.2;
+        tag.style.transform = `translate(${tx + 14}px, ${ty + 14}px)`;
+        tag.style.opacity = over ? 1 : 0;
+        const label = selected.has(act)
+          ? "Pinned - click to remove"
+          : "Pin as clue";
+        if (tag.textContent !== label) tag.textContent = label;
+        requestAnimationFrame(frame);
+      }
+      frame();
+    </script>
+  </body>
+</html>

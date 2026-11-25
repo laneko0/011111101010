@@ -15,7 +15,14 @@
         position: fixed;
       }
 
-      /* ---------- backdrop ---------- */
+      /* backdrop */
+      body {
+        font-family: var(--mono);
+      }
+      .topbar {
+        font-family: var(--mono);
+        letter-spacing: 0.06em;
+      }
       .page {
         position: fixed;
         z-index: 1;
@@ -111,7 +118,7 @@
         font: 700 max(10px, calc(12 * var(--u))) var(--pix);
       }
 
-      /* ---------- camera ---------- */
+      /* camera */
       #cam {
         left: calc(390 * var(--ux) - 350 * var(--u));
         top: calc(540 * var(--uy) - 345 * var(--u));
@@ -254,13 +261,265 @@
         color: #04160a;
       }
 
-      /* ---------- Case07x ---------- */
+      /* case window */
       #case {
-        left: calc(1050 * var(--ux) - 260.5 * var(--u));
-        top: calc(654 * var(--uy) - 257.5 * var(--u));
+        left: calc(1007.5 * var(--ux) - 260.5 * var(--u));
+        top: calc(665.5 * var(--uy) - 257.5 * var(--u));
         width: calc(521 * var(--u));
         height: calc(515 * var(--u));
         background: linear-gradient(#e6effc, #8fb4ea);
+      }
+
+      /* cloud and shopping log windows */
+      #cloud {
+        left: min(
+          calc(390 * var(--ux) + 368 * var(--u)),
+          calc(1007.5 * var(--ux) - 500.5 * var(--u))
+        );
+        top: calc(481 * var(--uy));
+        width: calc(230 * var(--u));
+        height: calc(195 * var(--u));
+      }
+      #cloud:not(.big) > header {
+        letter-spacing: 0.02em;
+      }
+      #cloud:not(.big) > header span {
+        min-width: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+      #shop {
+        left: calc(750 * var(--ux));
+        top: calc(62 * var(--uy));
+        width: calc(570 * var(--u));
+        height: calc(652 * var(--u));
+      }
+      /* expandable windows */
+      .win.anim {
+        transition: left 0.4s, top 0.4s, width 0.4s, height 0.4s;
+      }
+      .win > header .ex {
+        display: grid;
+        place-items: center;
+        width: 16px;
+        height: 16px;
+        padding: 0;
+        cursor: pointer;
+        border: 1px solid var(--line);
+        background: #fff;
+        color: var(--deep);
+      }
+      .win > header .ex:hover {
+        background: var(--blue);
+        color: #fff;
+      }
+
+      /* shopping log, expanded */
+      #shop {
+        left: min(calc(1167.5 * var(--ux)), calc(100vw - 293 * var(--u)));
+        top: calc(590 * var(--uy));
+        width: calc(285 * var(--u));
+        height: calc(326 * var(--u));
+      }
+      #shop.big {
+        left: calc(750 * var(--ux));
+        top: calc(62 * var(--uy));
+        width: calc(570 * var(--u));
+        height: calc(652 * var(--u));
+      }
+
+      /* cloud window, expanded */
+      #cloud.big {
+        --bar: clamp(26px, 1.9vw, 44px);
+        --w: min(66.67vw, (100vh - var(--bar)) * 0.75 * 4 / 3);
+        width: var(--w);
+        height: calc(var(--w) * 3 / 4);
+        left: calc((100vw - var(--w)) / 2);
+        top: calc(var(--bar) + (100vh - var(--bar) - var(--w) * 3 / 4) / 2);
+      }
+      #cloud .stage {
+        position: relative;
+        flex: 1;
+        min-height: 0;
+      }
+      #cloud .stage iframe {
+        position: absolute;
+        inset: 0;
+        height: 100%;
+      }
+      #cloud .sel {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.6s;
+      }
+      #cloud.pick .sel {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      #cloud.pick .gal {
+        visibility: hidden;
+        transition: visibility 0s 0.6s;
+      }
+      .repo {
+        --green: #5dff7a;
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.4s 0.25s;
+        color: var(--deep);
+        font-family: "Share Tech Mono", var(--mono);
+      }
+      #cloud.big:not(.pick) .repo {
+        opacity: 1;
+      }
+      #cloud.pick .repo {
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      /* repository frame */
+      .repo .crop {
+        position: absolute;
+        left: 24%;
+        top: 10%;
+        width: 50%;
+        height: 52%;
+        border: 2px solid var(--green);
+      }
+      .repo .crop i {
+        position: absolute;
+        width: 7px;
+        height: 7px;
+        background: var(--green);
+      }
+      .repo .crop .k1 {
+        left: -5px;
+        top: -5px;
+      }
+      .repo .crop .k2 {
+        right: -5px;
+        top: -5px;
+      }
+      .repo .crop .k3 {
+        left: -5px;
+        bottom: -5px;
+      }
+      .repo .crop .k4 {
+        right: -5px;
+        bottom: -5px;
+      }
+      .repo .crop .count {
+        position: absolute;
+        left: -2px;
+        bottom: 100%;
+        margin-bottom: 2px;
+        padding: 0.35em 0.9em;
+        background: #7f86e8;
+        color: #fff;
+        font: 400 max(13px, calc(16 * var(--u))) / 1 "Share Tech Mono",
+          var(--mono);
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+      .repo .crop .count b {
+        font-weight: 400;
+      }
+      .repo .crop .name {
+        position: absolute;
+        left: 100%;
+        top: 12%;
+        margin-left: -2px;
+        padding: 0.9em 0.4em;
+        writing-mode: vertical-rl;
+        background: var(--green);
+        border: 2px solid var(--green);
+        color: var(--deep);
+        font-size: max(11px, calc(14 * var(--u)));
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+      /* frame line and text block */
+      .repo .leader {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+      }
+      .repo .leader polyline {
+        fill: none;
+        stroke: var(--green);
+        stroke-width: 2;
+      }
+      .repo .ask {
+        position: absolute;
+        left: 6%;
+        top: 70%;
+        width: fit-content;
+        min-width: 22em;
+        max-width: 54%;
+        padding: 0.7em 1em 0.9em;
+        background: rgba(255, 255, 255, 0.5);
+        border: 2px solid var(--green);
+      }
+      .repo .ask small {
+        display: block;
+        margin-bottom: 0.4em;
+        font-size: max(10px, calc(12 * var(--u)));
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--deep);
+      }
+      .repo .ask p {
+        margin: 0 0 12px;
+        font: 500 max(12px, calc(15 * var(--u))) / 1.4 "Azeret Mono",
+          var(--mono);
+      }
+      .repo .go {
+        pointer-events: auto;
+        padding: 0.7em 1.4em;
+        font: 400 max(12px, calc(14 * var(--u))) / 1 "Share Tech Mono",
+          var(--mono);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #fff;
+        background: #7f86e8;
+        border: 0;
+        cursor: pointer;
+      }
+      .repo .go:hover {
+        background: var(--green);
+        color: var(--deep);
+      }
+      /* loading bar */
+      .repo .load {
+        display: none;
+      }
+      #cloud.busy .repo .go {
+        display: none;
+      }
+      #cloud.busy .repo .load {
+        display: block;
+      }
+      .repo .load .bar {
+        height: 10px;
+        background: #d9deef;
+      }
+      .repo .load .bar i {
+        display: block;
+        width: 0;
+        height: 100%;
+        background: var(--green);
+        border-right: 2px solid var(--deep);
+      }
+      .repo .load span {
+        display: block;
+        margin-top: 0.5em;
+        font-size: max(11px, calc(13 * var(--u)));
+        letter-spacing: 0.1em;
       }
       #case > header {
         background: none;
@@ -305,7 +564,7 @@
         text-decoration: underline;
       }
 
-      /* ---------- penguin menu ---------- */
+      /* penguin and message icons */
       .tux {
         left: calc(63 * var(--ux));
         top: calc(905 * var(--uy));
@@ -321,11 +580,220 @@
         width: 100%;
         height: 100%;
       }
+      .msg {
+        left: calc(102 * var(--ux));
+        top: calc(862 * var(--uy));
+        z-index: 9;
+        width: calc(56 * var(--u));
+        height: calc(54 * var(--u));
+        padding: 0;
+        background: none;
+        border: 0;
+        cursor: pointer;
+      }
+      .msg img {
+        width: 100%;
+        height: 100%;
+      }
+      .msg b,
+      .chat em {
+        display: grid;
+        place-items: center;
+        border-radius: 999px;
+        background: #fb5c88;
+        color: #fff;
+        font: 700 max(10px, calc(12 * var(--u))) / 1 "Azeret Mono", var(--mono);
+        font-style: normal;
+      }
+      .msg b {
+        position: absolute;
+        right: calc(-8 * var(--u));
+        top: calc(-6 * var(--u));
+        min-width: max(15px, calc(20 * var(--u)));
+        height: max(15px, calc(20 * var(--u)));
+      }
+      .msg b[hidden],
+      .chat em[hidden] {
+        display: none;
+      }
+
+      /* messages window */
+      #chat {
+        left: calc(300 * var(--ux));
+        top: calc(380 * var(--uy));
+        width: max(420px, calc(600 * var(--u)));
+        height: max(300px, calc(430 * var(--u)));
+      }
+      .chat {
+        flex: 1;
+        min-height: 0;
+        display: grid;
+        grid-template-columns: 38% minmax(0, 1fr);
+        grid-template-rows: minmax(0, 1fr);
+        margin: 0 calc(6 * var(--u)) calc(6 * var(--u));
+        background: #fff;
+        font: max(11px, calc(13 * var(--u))) / 1.35 var(--mono);
+        letter-spacing: 0.04em;
+        color: var(--deep);
+      }
+      .contacts {
+        list-style: none;
+        overflow: auto;
+        border-right: 1px solid var(--line);
+        background: var(--pale);
+      }
+      .contacts .label {
+        padding: 6px 10px;
+        border-bottom: 1px solid var(--line);
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        opacity: 0.6;
+      }
+      .contacts button {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        padding: 8px 10px;
+        font: inherit;
+        letter-spacing: inherit;
+        color: inherit;
+        text-align: left;
+        background: none;
+        border: 0;
+        border-bottom: 1px solid var(--line);
+        cursor: pointer;
+      }
+      .contacts button:hover,
+      .contacts button.on {
+        background: #fff;
+      }
+      .contacts button.on {
+        box-shadow: inset 3px 0 0 #7f86e8;
+      }
+      .contacts i {
+        flex: none;
+        display: grid;
+        place-items: center;
+        width: 2.4em;
+        height: 2.4em;
+        background: #7f86e8;
+        color: #fff;
+        font: 700 1em / 1 var(--pix);
+      }
+      .contacts li:last-child i {
+        background: var(--deep);
+      }
+      .contacts span {
+        flex: 1;
+        min-width: 0;
+      }
+      .contacts b,
+      .contacts small {
+        display: block;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+      .contacts b {
+        font-weight: 400;
+        text-transform: uppercase;
+      }
+      .contacts small {
+        font-size: 0.9em;
+        opacity: 0.65;
+      }
+      .chat em {
+        flex: none;
+        min-width: 17px;
+        height: 17px;
+      }
+      .thread {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        min-height: 0;
+      }
+      .thread .who {
+        padding: 6px 12px;
+        border-bottom: 1px solid var(--line);
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+      .msgs {
+        flex: 1;
+        min-height: 0;
+        overflow: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 12px;
+        user-select: text;
+      }
+      .msgs p {
+        flex: none;
+        max-width: 85%;
+        align-self: flex-start;
+        padding: 6px 10px;
+        border: 1px solid var(--line);
+        background: var(--pale);
+        color: #000;
+        font: max(11px, calc(12.5 * var(--u))) / 1.45 "Azeret Mono", var(--mono);
+        letter-spacing: 0;
+        overflow-wrap: anywhere;
+      }
+      .msgs p small {
+        display: block;
+        margin-top: 3px;
+        font-size: 0.82em;
+        opacity: 0.55;
+      }
+      .msgs p.me {
+        align-self: flex-end;
+        border-color: #7f86e8;
+        background: #7f86e8;
+        color: #fff;
+      }
+      .msgs p.me small {
+        opacity: 0.85;
+      }
+      .send {
+        display: flex;
+        gap: 6px;
+        padding: 8px;
+        border-top: 1px solid var(--line);
+      }
+      .send input {
+        flex: 1;
+        min-width: 0;
+        padding: 6px 8px;
+        font: inherit;
+        color: inherit;
+        border: 1px solid var(--line);
+        outline: none;
+      }
+      .send input:focus {
+        border-color: #7f86e8;
+      }
+      .send button {
+        padding: 0 14px;
+        font: inherit;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #fff;
+        background: #7f86e8;
+        border: 0;
+        cursor: pointer;
+      }
+      .topbar img {
+        cursor: pointer;
+      }
+      /* logo menu */
       .menu {
         position: fixed;
         z-index: 9000;
-        left: calc(107 * var(--ux));
-        top: calc(732 * var(--uy));
+        left: 1.6vw;
+        top: clamp(26px, 1.9vw, 44px);
         width: max(190px, calc(205 * var(--u)));
         padding: 8px 0;
         list-style: none;
@@ -351,6 +819,16 @@
         border-top: 1px dashed #000;
       }
 
+      /* screen shapes */
+      @media (max-aspect-ratio: 2/1) {
+        #cam {
+          height: min(
+            calc(690 * var(--u)),
+            calc(322 * var(--uy) + 331 * var(--u))
+          );
+        }
+      }
+
       @media (max-aspect-ratio: 1/1) {
         #cam {
           left: 3vw;
@@ -364,6 +842,16 @@
           width: 90vw;
           height: 46vh;
         }
+        #cloud,
+        #shop {
+          display: none;
+        }
+        #chat {
+          left: 3vw;
+          top: 30vh;
+          width: 94vw;
+          height: 52vh;
+        }
         .tux {
           left: 3vw;
           top: auto;
@@ -371,20 +859,24 @@
           width: 14vmin;
           height: 14vmin;
         }
-        .menu {
-          left: 3vw;
+        .msg {
+          left: calc(3vw + 14vmin + 3vw);
           top: auto;
-          bottom: calc(2vh + 15vmin);
+          bottom: 2.5vh;
+          width: 12vmin;
+          height: 12vmin;
         }
       }
     </style>
   </head>
   <body>
+    <!-- menu bar -->
     <header class="topbar">
       <img src="img/menu-logo.png" alt="" /><span>File</span><span>Edit</span
       ><span>View</span><span>Special</span>
     </header>
 
+    <!-- poster page -->
     <section class="page">
       <p class="cap">Missing person: Arda Whitlock</p>
       <p class="small a">This file presents what is known about the subject</p>
@@ -422,6 +914,7 @@
       <p class="call">If seen, call 555-0248</p>
     </section>
 
+    <!-- camera window -->
     <section class="win" id="cam" data-pinned>
       <header>
         <span>cam_07 — fifth ave / 42nd</span
@@ -455,6 +948,7 @@
       </div>
     </section>
 
+    <!-- case window -->
     <section class="win" id="case" data-pinned>
       <header>
         <span>Case07x</span><button class="x" aria-label="Close">×</button>
@@ -483,6 +977,107 @@
       </div>
     </section>
 
+    <!-- cloud window -->
+    <section class="win" id="cloud" data-pinned>
+      <header>
+        <span id="cloud-title">media repository_sync</span
+        ><button class="ex" id="cloud-ex" aria-label="Expand" title="Expand">
+          <svg
+            width="10"
+            height="10"
+            viewBox="0 0 10 10"
+            fill="none"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <rect x="0.5" y="2.5" width="7" height="7" />
+            <path d="M2.5 2.5V0.5H9.5V7.5H7.5" />
+          </svg></button
+        ><button class="x" aria-label="Close">×</button>
+      </header>
+      <div class="stage">
+        <iframe class="gal" src="galaxy.html?v=6" title="Cloud"></iframe>
+        <iframe class="sel" title="Media images"></iframe>
+        <div class="repo">
+          <div class="crop">
+            <span class="count"><b>32562</b> (images)</span>
+            <i class="k1"></i><i class="k2"></i><i class="k3"></i
+            ><i class="k4"></i>
+            <span class="name">Media repository</span>
+          </div>
+          <svg
+            class="leader"
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            <polyline points="24,62 12,70" vector-effect="non-scaling-stroke" />
+          </svg>
+          <div class="ask">
+            <small id="ask-small">Task 01 / image selection</small>
+            <p id="ask-p">Select the images most relevant to the case.</p>
+            <button class="go" id="repo-go" type="button">Process data</button>
+            <div class="load" aria-live="polite">
+              <div class="bar"><i id="load-bar"></i></div>
+              <span id="load-n">0 / 32,562</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- shopping log window -->
+    <section class="win" id="shop" data-pinned>
+      <header>
+        <span>shopping_log — arda_w</span
+        ><button class="ex" id="shop-ex" aria-label="Expand" title="Expand">
+          <svg
+            width="10"
+            height="10"
+            viewBox="0 0 10 10"
+            fill="none"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <rect x="0.5" y="2.5" width="7" height="7" />
+            <path d="M2.5 2.5V0.5H9.5V7.5H7.5" />
+          </svg></button
+        ><button class="x" aria-label="Close">×</button>
+      </header>
+      <iframe src="shopping-log.html?v=6" title="Shopping log"></iframe>
+    </section>
+
+    <!-- messages window -->
+    <section class="win" id="chat" hidden>
+      <header>
+        <span>messages — inbox</span
+        ><button class="x" aria-label="Close">×</button>
+      </header>
+      <div class="chat">
+        <ul class="contacts" id="contacts">
+          <li class="label">Contacts</li>
+          <li>
+            <button type="button" data-chat="intern">
+              <i>I</i><span><b>Intern K</b><small></small></span><em>1</em>
+            </button>
+          </li>
+        </ul>
+        <div class="thread">
+          <div class="who" id="chat-who"></div>
+          <div class="msgs" id="chat-msgs" aria-live="polite"></div>
+          <form class="send" id="chat-send">
+            <input
+              placeholder="Write a message..."
+              aria-label="Message"
+              autocomplete="off"
+            />
+            <button type="submit">Send</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- profile and news windows -->
     <section class="win" id="profile" data-src="linkedin.html" hidden>
       <header>
         <span>linkedin — arda whitlock</span
@@ -498,11 +1093,17 @@
       <iframe title="News article"></iframe>
     </section>
 
-    <button class="at tux" id="tux" aria-label="Menu">
+    <!-- desktop icons and logo menu -->
+    <button class="at tux" id="tux" aria-label="Penguin">
       <img src="img/tux.png" alt="" />
     </button>
+    <button class="at msg" id="msg" data-open="chat" aria-label="Messages">
+      <img src="img/message.png" alt="" />
+      <b id="unread">1</b>
+    </button>
     <ul class="menu" id="menu" hidden>
-      <li>Back to desktop</li>
+      <li class="act" id="tidy">Back to desktop</li>
+      <li class="act" id="clean">Tidy windows</li>
       <hr />
       <li>Alarm Clock</li>
       <li>Calculator</li>
@@ -528,7 +1129,7 @@
         )}:${p(s % 60)} UTC`;
       }, 1000);
 
-      // photo shifts with the mouse
+      // photo parallax
       const feed = document.querySelector(".feed");
       feed.addEventListener("pointermove", (e) => {
         const r = feed.getBoundingClientRect();
@@ -546,11 +1147,181 @@
         feed.style.setProperty("--my", 0);
       });
 
-      // penguin menu
+      // expandable windows
+      function expandable(win, btn, onSmall) {
+        let spot = null;
+        btn.addEventListener("click", () => {
+          const big = !win.classList.contains("big");
+          win.classList.add("anim");
+          setTimeout(() => win.classList.remove("anim"), 450);
+          if (big) {
+            spot = [win.style.left, win.style.top];
+            win.style.left = win.style.top = "";
+          } else {
+            if (spot) [win.style.left, win.style.top] = spot;
+            if (onSmall) onSmall();
+          }
+          win.classList.toggle("big", big);
+          if (big)
+            win.dispatchEvent(
+              new PointerEvent("pointerdown", { bubbles: true })
+            );
+          const label = big ? "Restore" : "Expand";
+          btn.setAttribute("aria-label", label);
+          btn.title = label;
+        });
+      }
+
+      // cloud window
+      const cloud = document.getElementById("cloud"),
+        cloudTitle = document.getElementById("cloud-title"),
+        picker = cloud.querySelector("iframe.sel"),
+        askSmall = document.getElementById("ask-small"),
+        askP = document.getElementById("ask-p"),
+        loadBar = document.getElementById("load-bar"),
+        loadN = document.getElementById("load-n");
+      const TOTAL = 32562;
+      let loading = 0;
+      function resetCloud() {
+        clearInterval(loading);
+        cloud.classList.remove("pick", "busy");
+        cloudTitle.textContent = "media repository_sync";
+        askSmall.textContent = "Task 01 / image selection";
+        askP.textContent = "Select the images most relevant to the case.";
+        loadBar.style.width = "0";
+      }
+      expandable(cloud, document.getElementById("cloud-ex"), resetCloud);
+      // process data
+      document.getElementById("repo-go").addEventListener("click", () => {
+        if (!picker.getAttribute("src"))
+          picker.src = "media.html?v=" + Date.now();
+        cloud.classList.add("busy");
+        askSmall.textContent = "Task 01 / processing";
+        askP.textContent = "Indexing the media repository...";
+        const t0 = Date.now(),
+          MS = 2800;
+        loading = setInterval(() => {
+          const k = Math.min(1, (Date.now() - t0) / MS),
+            e = 1 - (1 - k) ** 2;
+          loadBar.style.width = e * 100 + "%";
+          loadN.textContent =
+            Math.round(e * TOTAL).toLocaleString("en-US") +
+            " / " +
+            TOTAL.toLocaleString("en-US");
+          if (k === 1) {
+            clearInterval(loading);
+            askP.textContent = "Done. Opening the image selector...";
+            setTimeout(() => {
+              cloud.classList.add("pick");
+              cloudTitle.textContent = "media repository_image selection";
+            }, 350);
+          }
+        }, 40);
+      });
+
+      // shopping log window
+      expandable(
+        document.getElementById("shop"),
+        document.getElementById("shop-ex")
+      );
+
+      // messages
+      const CHATS = {
+        intern: {
+          name: "Intern K",
+          msgs: [
+            [
+              "them",
+              "Morning, boss. The media repository finished syncing: 32,562 images.",
+              "Nov 24, 09:15",
+            ],
+            ["me", "Anything on Arda?", "Nov 24, 09:17"],
+            [
+              "them",
+              "Too many to tell. Could you pin the clues you need? Once they come through on the backend, I'll send them over to you ASAP.",
+              "Nov 24, 09:18",
+            ],
+            [
+              "them",
+              "Also, the coffee machine is broken again.",
+              "Nov 24, 09:19",
+            ],
+          ],
+        },
+      };
+      const chatWin = document.getElementById("chat"),
+        chatMsgs = document.getElementById("chat-msgs"),
+        chatInput = document.querySelector("#chat-send input"),
+        unread = document.getElementById("unread"),
+        tabs = [...document.querySelectorAll("#contacts [data-chat]")];
+      let current = "intern";
+      function showChat(id) {
+        current = id;
+        const c = CHATS[id];
+        document.getElementById("chat-who").textContent = c.name;
+        chatMsgs.replaceChildren(
+          ...c.msgs.map(([from, text, time]) => {
+            const p = document.createElement("p"),
+              t = document.createElement("small");
+            p.className = from;
+            t.textContent = time;
+            p.append(text, t);
+            return p;
+          })
+        );
+        chatMsgs.scrollTop = chatMsgs.scrollHeight;
+        for (const b of tabs) {
+          b.classList.toggle("on", b.dataset.chat === id);
+          b.querySelector("small").textContent =
+            CHATS[b.dataset.chat].msgs.at(-1)[1];
+        }
+        if (id === "intern" && !chatWin.hidden) {
+          unread.hidden = true;
+          tabs[0].querySelector("em").hidden = true;
+        }
+      }
+      tabs.forEach((b) =>
+        b.addEventListener("click", () => showChat(b.dataset.chat))
+      );
+      document
+        .getElementById("msg")
+        .addEventListener("click", () => setTimeout(() => showChat(current)));
+      document.getElementById("chat-send").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const text = chatInput.value.trim();
+        if (!text) return;
+        CHATS[current].msgs.push(["me", text, "Now"]);
+        chatInput.value = "";
+        showChat(current);
+      });
+      showChat(current);
+
+      // logo menu
       const menu = document.getElementById("menu");
-      document.getElementById("tux").onclick = (e) => {
+      document.querySelector(".topbar img").onclick = (e) => {
         menu.hidden = !menu.hidden;
         e.stopPropagation();
+      };
+      // tidy windows
+      document.getElementById("clean").onclick = () => {
+        resetCloud();
+        document.querySelectorAll(".win").forEach((w) => {
+          w.classList.remove("big", "anim");
+          w.style.left = w.style.top = w.style.zIndex = "";
+          if (!w.hasAttribute("data-pinned")) w.hidden = true;
+        });
+        document.querySelectorAll(".win .ex").forEach((b) => {
+          b.setAttribute("aria-label", "Expand");
+          b.title = "Expand";
+        });
+        document
+          .querySelectorAll("[data-open]")
+          .forEach((b) =>
+            b.classList.toggle(
+              "on",
+              !document.getElementById(b.dataset.open).hidden
+            )
+          );
       };
       document.addEventListener("click", () => (menu.hidden = true));
     </script>

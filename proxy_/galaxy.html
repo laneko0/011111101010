@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Galaxy — Last Seen Online</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; overflow: hidden; background: #c6cad6; }
+    svg { position: fixed; inset: 0; width: 100%; height: 100%; animation: in 2s ease-out both; }
+
+    /* galaxy rings */
+    #gal { translate: calc(var(--mx, 0) * -24px) calc(var(--my, 0) * -24px); transition: translate .8s ease-out; }
+    .ring { transform-origin: 500px 500px; animation: spin var(--t) linear infinite; }
+    @keyframes spin { to { transform: rotate(var(--turn)); } }
+    @keyframes in   { from { opacity: 0; } }
+
+    /* sky */
+    .src { translate: calc(var(--mx, 0) * 60px) 0; transition: translate .8s ease-out; }
+    .pulse { animation: pulse 6s ease-in-out infinite alternate; }
+    .pillar { transform-box: fill-box; transform-origin: 50% 100%; animation: rise 9s ease-in-out infinite alternate; }
+    .hring { transform-box: fill-box; transform-origin: center; animation: breathe 11s ease-in-out infinite alternate; }
+    @keyframes pulse   { from { opacity: .82; } }
+    @keyframes rise    { to { transform: scaleY(1.07); } }
+    @keyframes breathe { to { transform: scale(1.025, 1.06); } }
+
+    /* disk hover */
+    .ring:has(.orb:hover) { animation-play-state: paused; }
+    .orb { transform-box: fill-box; transform-origin: center; transition: transform .5s cubic-bezier(.34, 1.56, .64, 1), translate .5s cubic-bezier(.34, 1.56, .64, 1), filter .3s; }
+    .orb:hover { transform: scale(1.2); filter: saturate(1.5) brightness(1.08); }
+    .orb ellipse { pointer-events: none; }
+    .orb .hit { fill: transparent; pointer-events: all; cursor: pointer; }
+    .ripple { pointer-events: none; transform-box: fill-box; transform-origin: center; animation: ripple .9s ease-out forwards; }
+    .ripple ellipse { fill: none; stroke: #fff; stroke-width: 6px; vector-effect: non-scaling-stroke; filter: blur(3px); }
+    @keyframes ripple { to { transform: scale(2.2); opacity: 0; } }
+    @media (max-width: 400px) { .ripple ellipse { stroke-width: 2px; filter: none; } }
+  </style>
+</head>
+<body>
+  <!-- sky -->
+  <svg id="halo" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs>
+      <linearGradient id="hsky" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0"   stop-color="#7f87a6"/>
+        <stop offset=".35" stop-color="#b3b8cc"/>
+        <stop offset=".7"  stop-color="#c9cddb"/>
+        <stop offset="1"   stop-color="#8e97b4"/>
+      </linearGradient>
+      <radialGradient id="hvig" cx=".5" cy=".55" r=".75"><stop offset=".45" stop-color="#4f5a7c" stop-opacity="0"/><stop offset="1" stop-color="#4f5a7c" stop-opacity=".6"/></radialGradient>
+      <radialGradient id="hglow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff"/><stop offset=".25" stop-color="#fffbea" stop-opacity=".95"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+      <linearGradient id="hbeam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".35" stop-color="#fff" stop-opacity=".6"/><stop offset=".7" stop-color="#fff" stop-opacity=".98"/><stop offset="1" stop-color="#fffdf2"/></linearGradient>
+      <filter id="hb2"  x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="1.6"/></filter>
+      <filter id="hb14" x="-50%" y="-30%" width="200%" height="160%"><feGaussianBlur stdDeviation="14"/></filter>
+      <filter id="hb40" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="40"/></filter>
+      <filter id="hhaze" x="0" y="0" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency=".004 .007" numOctaves="3" seed="7"/>
+        <feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .55 -.12"/>
+      </filter>
+    </defs>
+
+    <rect width="1000" height="1000" fill="url(#hsky)"/>
+    <rect width="1000" height="1000" filter="url(#hhaze)" opacity=".5"/>
+
+    <!-- top rainbow -->
+    <g fill="none" stroke-linecap="round" filter="url(#hb2)">
+      <path d="M 150 50 Q 500 340 850 50" stroke="#fff" stroke-width="40" opacity=".3" filter="url(#hb14)"/>
+      <path d="M 150 38 Q 500 328 850 38" stroke="#ff8a7a" stroke-width="6" opacity=".85"/>
+      <path d="M 150 44 Q 500 334 850 44" stroke="#ffc07a" stroke-width="6" opacity=".85"/>
+      <path d="M 150 50 Q 500 340 850 50" stroke="#fff08a" stroke-width="6" opacity=".85"/>
+      <path d="M 150 56 Q 500 346 850 56" stroke="#a8ec9c" stroke-width="6" opacity=".85"/>
+      <path d="M 150 62 Q 500 352 850 62" stroke="#8fe4f0" stroke-width="6" opacity=".85"/>
+      <path d="M 150 68 Q 500 358 850 68" stroke="#8fa8ff" stroke-width="6" opacity=".85"/>
+      <path d="M 150 74 Q 500 364 850 74" stroke="#c394ff" stroke-width="6" opacity=".85"/>
+    </g>
+
+    <!-- halo ring -->
+    <g class="hring" fill="none" filter="url(#hb2)">
+      <ellipse cx="500" cy="700" rx="672" ry="84" stroke="#ff9f8c" stroke-width="5" opacity=".85"/>
+      <ellipse cx="500" cy="700" rx="680" ry="88" stroke="#fff" stroke-width="6"/>
+      <ellipse cx="500" cy="700" rx="689" ry="93" stroke="#9fb8ff" stroke-width="5" opacity=".85"/>
+      <ellipse cx="500" cy="716" rx="430" ry="52" stroke="#fff" stroke-width="3" opacity=".5"/>
+      <ellipse cx="500" cy="700" rx="680" ry="88" fill="#fff" fill-opacity=".1" stroke="none"/>
+    </g>
+
+    <!-- light -->
+    <g class="src">
+      <g class="pulse">
+        <ellipse cx="500" cy="520" rx="190" ry="420" fill="#fff" opacity=".5" filter="url(#hb40)"/>
+        <path class="pillar" d="M 480 230 L 520 230 L 600 760 L 400 760 Z" fill="url(#hbeam)" filter="url(#hb14)"/>
+        <ellipse cx="500" cy="700" rx="170" ry="140" fill="#ffd9a0" opacity=".55" filter="url(#hb40)"/><ellipse cx="500" cy="700" rx="230" ry="190" fill="url(#hglow)"/><ellipse cx="500" cy="700" rx="110" ry="98" fill="#fff" filter="url(#hb14)"/>
+        <ellipse cx="500" cy="885" rx="190" ry="80" fill="url(#hglow)"/><ellipse cx="500" cy="885" rx="70" ry="28" fill="#fff" filter="url(#hb14)"/>
+      </g>
+    </g>
+
+    <rect width="1000" height="1000" fill="url(#hvig)"/>
+  </svg>
+
+  <!-- galaxy -->
+  <svg viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <defs id="defs"></defs>
+    <g id="gal"></g>
+  </svg>
+
+  <script>
+    // blob colours
+    const BLOBS = [
+      [[0, '#ff0a00', 1], [.28, '#ff3a10', 1], [.5, '#ff8a4a', .95], [.72, '#ffa0c8', .6], [1, '#ffc4e4', 0]],
+      [[0, '#00a8ff', 1], [.3, '#2f7bff', 1], [.58, '#6f80ff', .9], [.82, '#b8b4ff', .5], [1, '#d8d4ff', 0]],
+      [[0, '#ff4a70', 1], [.35, '#ff7ab0', .9], [.7, '#c8a0ff', .55], [1, '#d8c4ff', 0]],
+    ];
+    const NS = 'http://www.w3.org/2000/svg';
+    const el = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); parent && parent.append(e); return e; };
+
+    // seeded random
+    let seed = 21;
+    const rnd = () => { seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+
+    const defs = document.getElementById('defs');
+    BLOBS.forEach((stops, i) => {
+      const g = el('radialGradient', { id: 'b' + i }, defs);
+      stops.forEach(([offset, c, o]) => el('stop', { offset, 'stop-color': c, 'stop-opacity': o }, g));
+    });
+
+    // rings
+    const gal = document.getElementById('gal');
+    const rings = [[120, 360], [180, -360], [280, 360]].map(([t, turn]) => { const g = el('g', { class: 'ring' }, gal); g.style.setProperty('--t', t + 's'); g.style.setProperty('--turn', turn + 'deg'); return g; });
+
+    // disk hover
+    const ripple = (ring, shape) => {
+      const wave = el('g', { class: 'ripple' }, ring);
+      el('ellipse', shape, wave);
+      wave.addEventListener('animationend', () => wave.remove());
+    };
+    const follow = (ring, orb, x, y) => {
+      orb.addEventListener('pointermove', e => {
+        const p = new DOMPoint(e.clientX, e.clientY).matrixTransform(ring.getScreenCTM().inverse());
+        orb.style.translate = `${(p.x - x) * .4}px ${(p.y - y) * .4}px`;
+      });
+      orb.addEventListener('pointerleave', () => (orb.style.translate = ''));
+    };
+
+    // spiral arms
+    const ARMS = 3;
+    for (let n = 0; n < 18; n++) {
+      const r = 330 * Math.pow(rnd(), .9), arm = n % ARMS, a = arm * 2 * Math.PI / ARMS + r * .014 + (rnd() - .5) * .9;
+      const x = 500 + r * Math.cos(a), y = 500 + r * Math.sin(a), size = 80 + Math.pow(rnd(), 1.2) * 140 * (1 - r / 900);
+      const k = n % 5 === 4 ? 2 : n % 2;
+      const ry = size * (.45 + rnd() * .35), transform = `rotate(${Math.round(-70 + rnd() * 140)} ${x} ${y})`;
+      const ring = rings[r < 120 ? 0 : r < 240 ? 1 : 2], orb = el('g', { class: 'orb' }, ring);
+      const core = { cx: x, cy: y, rx: size * .5, ry: ry * .5, transform };
+      el('ellipse', { cx: x, cy: y, rx: size, ry, fill: `url(#b${k})`, transform }, orb);
+      el('ellipse', { ...core, class: 'hit' }, orb);
+      orb.addEventListener('pointerenter', () => ripple(ring, core));
+      follow(ring, orb, x, y);
+    }
+
+    // pointer movement
+    addEventListener('pointermove', e => {
+      document.documentElement.style.setProperty('--mx', e.clientX / innerWidth - .5);
+      document.documentElement.style.setProperty('--my', e.clientY / innerHeight - .5);
+    });
+  </script>
+</body>
+</html>
