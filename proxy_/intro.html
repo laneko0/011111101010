@@ -929,7 +929,7 @@
         <i class="grain"></i><i class="scan"></i><i class="vig"></i
         ><i class="frame"></i>
         <span class="tl">SYS DIAG: OK</span>
-        <span class="tr" id="clock">TIME: 23:47:32 UTC</span>
+        <span class="tr" id="clock">TIME: 22:55:00 EST</span>
         <span class="br">SYS DIAG: OK<br />SIGNAL: LOW LIGHT</span>
         <i class="face"></i><i class="link"></i>
         <div class="hud">
@@ -1044,7 +1044,7 @@
           </svg></button
         ><button class="x" aria-label="Close">×</button>
       </header>
-      <iframe src="shopping-log.html?v=6" title="Shopping log"></iframe>
+      <iframe src="shopping-log.html?v=7" title="Shopping log"></iframe>
     </section>
 
     <!-- messages window -->
@@ -1078,7 +1078,7 @@
     </section>
 
     <!-- profile and news windows -->
-    <section class="win" id="profile" data-src="linkedin.html" hidden>
+    <section class="win" id="profile" data-src="linkedin.html?v=2" hidden>
       <header>
         <span>linkedin — arda whitlock</span
         ><button class="x" aria-label="Close">×</button>
@@ -1122,11 +1122,11 @@
         t0 = Date.now();
       setInterval(() => {
         const s =
-            23 * 3600 + 47 * 60 + 32 + Math.floor((Date.now() - t0) / 1000),
+            22 * 3600 + 55 * 60 + (Math.floor((Date.now() - t0) / 1000) % 300),
           p = (n) => String(n).padStart(2, "0");
         clock.textContent = `TIME: ${p(Math.floor(s / 3600) % 24)}:${p(
           Math.floor(s / 60) % 60
-        )}:${p(s % 60)} UTC`;
+        )}:${p(s % 60)} EST`;
       }, 1000);
 
       // photo parallax
@@ -1233,18 +1233,18 @@
             [
               "them",
               "Morning, boss. The media repository finished syncing: 32,562 images.",
-              "Nov 24, 09:15",
+              "Nov 17, 09:15",
             ],
-            ["me", "Anything on Arda?", "Nov 24, 09:17"],
+            ["me", "Anything on Arda?", "Nov 17, 09:17"],
             [
               "them",
               "Too many to tell. Could you pin the clues you need? Once they come through on the backend, I'll send them over to you ASAP.",
-              "Nov 24, 09:18",
+              "Nov 17, 09:18",
             ],
             [
               "them",
               "Also, the coffee machine is broken again.",
-              "Nov 24, 09:19",
+              "Nov 17, 09:19",
             ],
           ],
         },
